@@ -32,10 +32,10 @@ BUCKETSIZE = 100
 
 # rdbms
 ENGION_CONFIG = [
-    # 'mysql://root:utopia@127.0.0.1:3306/spider?charset=utf8',  # mysql
-    # 'postgresql://spider:spider@172.16.122.19:5432/spider_db',  # postgresql
-    # 'oracle://spider:spider@127.0.0.1:1521/spider_db',  # oracle
-    # 'mssql+pymssql://spider:spider@127.0.0.1',  # sqlserver
+    # 'mysql://user:pwd@127.0.0.1:3306/spider_db?charset=utf8',  # mysql
+    # 'postgresql://user:pwd@127.0.0.1:5432/spider_db',  # postgresql
+    # 'oracle://user:pwd@127.0.0.1:1521/spider_db',  # oracle
+    # 'mssql+pymssql://user:pwd@127.0.0.1:1433/spider_db',  # sqlserver
     'sqlite:///D:/GitHub/spiderman/foo.db'  # sqlite
 ][0]
 

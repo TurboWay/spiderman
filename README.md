@@ -54,18 +54,23 @@ class ScheduledRequest:
 
 
 ### 下载安装
-1. pip install -r requestsment.txt
+1. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requestsment.txt
 2. 修改配置 spiderman/SP/settings.py
 3. 运行demo示例
+
     cd spiderman；python SP_JOBS/zhifang_job.py
 
 
 ### 使用方法
-新增爬虫时，运行 easy_scrapy.py 会根据模板自动生成代码文件，并打开 spidername_job.py 文件；
-1. SP_JOBS/spidername_job.py    编写初始请求
-2. SP/spiders/spidername.py     编写解析规则，产生新的请求
-3. SP/items/spidername_items.py   定义字段
-4. SP/pipelines/spidername_pipelines.py  定义表映射、字段类型
+新增爬虫时，运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job.py 文件；
+
+| 类别 | 路径  | 说明  |
+| ------------ | ------------ | ------------ |
+| job       | SP_JOBS/spidername_job.py             | 编写初始请求 |
+| spider    | SP/spiders/spidername.py              | 编写解析规则，产生新的请求  |
+| items     | SP/items/spidername_items.py          | 定义字段  |
+| pipelines | SP/pipelines/spidername_pipelines.py  | 定义表映射、字段类型  |
+
 运行 SP_JOBS/spidername_job.py， 执行爬虫
 
 
@@ -76,3 +81,5 @@ class ScheduledRequest:
 ### TODO
 - 支持更多类型的数据库，比如 mongodb
 - 增加通用的补爬处理方法
+- 增加分布式爬虫调用方法
+- 增加 kafka 调用方法，实现实时采集、监控预警
