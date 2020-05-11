@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/scrapy--redis-0.6%2B-yellowgreen)
 ![](https://img.shields.io/badge/SQLAlchemy-1.3%2B-green)
 
-基于scrapy-redis的通用分布式爬虫
+基于scrapy-redis的通用分布式爬虫框架
 
 ### demo采集效果
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/file.jpg)
@@ -37,7 +37,7 @@
 
 
 ### 原理说明
-1. 基于 scrapy-redis 的分布式爬虫，消息队列使用 redis，采集策略使用先进先出
+1. 消息队列使用 redis，采集策略使用先进先出
 2. 每个爬虫都有一个 job 文件，使用 job 来生成初始请求类 ScheduledRequest，并将其推送到 redis；
 初始请求全部推到 redis 后，运行 spider 解析生成数据 并迭代新的请求到redis, 直到 redis 中的全部请求被消耗完
 ```python
