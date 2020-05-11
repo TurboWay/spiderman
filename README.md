@@ -8,25 +8,25 @@
 - 每个爬虫独立定制，互不影响，适合多站点开发
 - 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
 - 反爬处理简易，已封装各种反爬中间件
-- [x] 随机UserAgent
-- [x] 定制请求头Headers
-- [x] 定制Cookies
-- [x] 定制代理ip
-- [x] 在scrapy中使用requests
-- [x] Payload请求
-- [x] 使用Splash渲染js
+    - [x] 随机UserAgent
+    - [x] 定制请求头Headers
+    - [x] 定制Cookies
+    - [x] 定制代理ip
+    - [x] 在scrapy中使用requests
+    - [x] Payload请求
+    - [x] 使用Splash渲染js
 - 采集数据落地，支持多种数据库
-- [x] mysql
-- [x] sqlserver
-- [x] oracle
-- [x] postgresql
-- [x] hbase
-- [x] sqlite3
-- [ ] mongodb
+    - [x] mysql
+    - [x] sqlserver
+    - [x] oracle
+    - [x] postgresql
+    - [x] hbase
+    - [x] sqlite3
+    - [ ] mongodb
 
 
 
-###原理说明
+### 原理说明
 1. 基于 scrapy-redis 的分布式爬虫，消息队列使用 redis，采集策略使用先进先出
 2. 每个爬虫都有一个 job 文件，使用 job 来生成初始请求类 ScheduledRequest，并将其推送到 redis；
 初始请求全部推到 redis 后，运行 spider 解析生成数据 并迭代新的请求到redis, 直到 redis 中的全部请求被消耗完
