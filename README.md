@@ -15,18 +15,10 @@
 
 - 自动建表
 - 自动生成爬虫代码，只需编写少量代码即可完成分布式爬虫
-- 每个爬虫独立定制，互不影响，适合多站点开发
-- 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
 - 自动存储元数据，分析统计和补爬都很方便
-- 反爬处理简易，已封装各种反爬中间件
-    - [x] 随机UserAgent
-    - [x] 定制请求头Headers
-    - [x] 定制Cookies
-    - [x] 定制代理ip
-    - [x] 在scrapy中使用requests
-    - [x] Payload请求
-    - [x] 使用Splash渲染js
-- 采集数据落地，支持多种数据库
+- 适合多站点开发，每个爬虫独立定制，互不影响
+- 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
+- 采集数据落地方便，支持多种数据库
     - [x] mysql
     - [x] sqlserver
     - [x] oracle
@@ -34,7 +26,14 @@
     - [x] hbase
     - [x] sqlite3
     - [ ] mongodb
-
+- 反爬处理简易，已封装各种反爬中间件
+    - [x] 随机UserAgent
+    - [x] 定制请求头Headers
+    - [x] 定制Cookies
+    - [x] 定制代理ip
+    - [x] 在scrapy中使用requests
+    - [x] Payload请求
+    - [x] 使用Splash渲染 js
 
 
 ### 原理说明
