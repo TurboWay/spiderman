@@ -1,5 +1,15 @@
 # spiderman
+![](https://img.shields.io/badge/python-3.6%2B-brightgreen)
+![](https://img.shields.io/badge/Scrapy-1.6%2B-orange)
+![](https://img.shields.io/badge/scrapy--redis-0.6%2B-yellowgreen)
+![](https://img.shields.io/badge/SQLAlchemy-1.3%2B-green)
+
 基于scrapy-redis的通用分布式爬虫
+
+### demo采集效果
+![image](https://github.com/TurboWay/spiderman/blob/master/example/file.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
 
 ### 功能
 
@@ -7,6 +17,7 @@
 - 自动生成爬虫代码，只需编写少量代码即可完成分布式爬虫
 - 每个爬虫独立定制，互不影响，适合多站点开发
 - 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
+- 自动存储元数据，分析统计和补爬都很方便
 - 反爬处理简易，已封装各种反爬中间件
     - [x] 随机UserAgent
     - [x] 定制请求头Headers
