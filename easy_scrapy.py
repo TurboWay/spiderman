@@ -46,6 +46,7 @@ pipeline = """#!/usr/bin/env python3
 # @Time : ${time}
 # @Author : ${author}
 
+from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
 from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
 from SP.pipelines.pipelines_rdbm import RdbmPipeline as SPRdbmPipeline
 from SP.items.${spidername}_items import *
@@ -79,6 +80,12 @@ class HbasePipeline(SPHbasePipeline):
 
     def __init__(self):
         super().__init__(item_table_map=item_table_map)
+
+
+class MongodbPipeline(SPMongodbPipeline):
+
+    def __init__(self):
+        super().__init__(item_table_map=item_table_map)
 """
 
 spider = """#!/usr/bin/env python3
@@ -108,6 +115,7 @@ class ${spidername}_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             'SP.pipelines.${spidername}_pipelines.RdbmPipeline': 200,
             # 'SP.pipelines.${spidername}_pipelines.HbasePipeline': 201
+            # 'SP.pipelines.${spidername}_pipelines.MongodbPipeline': 202
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,

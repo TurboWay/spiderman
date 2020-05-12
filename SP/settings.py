@@ -43,6 +43,11 @@ ENGION_CONFIG = [
 HBASE_HOST = '172.16.122.20'
 HBASE_PORT = 25002
 
+# mongodb
+MONGODB_HOST = '127.0.0.1'
+MONGODB_PORT = 27017
+MONGODB_DB = 'spider_db'
+
 # scrapy_redis
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"

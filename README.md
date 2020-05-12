@@ -25,7 +25,7 @@
     - [x] postgresql
     - [x] hbase
     - [x] sqlite3
-    - [ ] mongodb
+    - [x] mongodb
 - 反爬处理简易，已封装各种反爬中间件
     - [x] 随机UserAgent
     - [x] 定制请求头Headers
@@ -79,7 +79,7 @@ class ScheduledRequest:
 
 
 ### TODO
-- 支持更多类型的数据库，比如 mongodb
+- ~~支持更多类型的数据库，比如 mongodb~~
 - 增加通用的补爬处理方法
 - 增加分布式爬虫调用方法
 - 增加 kafka 调用方法，实现实时采集、监控预警

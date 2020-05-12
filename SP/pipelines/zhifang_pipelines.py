@@ -3,6 +3,7 @@
 # @Time : 2020-05-09 15:31
 # @Author : way
 
+from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
 from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
 from SP.pipelines.pipelines_rdbm import RdbmPipeline as SPRdbmPipeline
 from SP.items.zhifang_items import *
@@ -33,6 +34,12 @@ class RdbmPipeline(SPRdbmPipeline):
 
 
 class HbasePipeline(SPHbasePipeline):
+
+    def __init__(self):
+        super().__init__(item_table_map=item_table_map)
+
+
+class MongodbPipeline(SPMongodbPipeline):
 
     def __init__(self):
         super().__init__(item_table_map=item_table_map)
