@@ -25,11 +25,12 @@
     - [x] sqlserver
     - [x] oracle
     - [x] postgresql
+    - [x] sqlite3
     
     非关系型
-    - [x] hbase
-    - [x] sqlite3
+    - [x] hbase    
     - [x] mongodb
+    
 - 反爬处理简易，已封装各种反爬中间件
     - [x] 随机UserAgent
     - [x] 定制请求头Headers
