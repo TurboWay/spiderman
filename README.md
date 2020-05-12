@@ -19,10 +19,14 @@
 - 适合多站点开发，每个爬虫独立定制，互不影响
 - 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
 - 采集数据落地方便，支持多种数据库
+
+    关系型
     - [x] mysql
     - [x] sqlserver
     - [x] oracle
     - [x] postgresql
+    
+    非关系型
     - [x] hbase
     - [x] sqlite3
     - [x] mongodb
