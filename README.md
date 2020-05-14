@@ -11,14 +11,21 @@
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
 
+### 分布式爬虫运行
+![image](https://github.com/TurboWay/spiderman/blob/master/example/cluster.jpg)
+
+### 单机爬虫运行
+![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
+
 ### 功能
 
 - 自动建表
 - 自动生成爬虫代码，只需编写少量代码即可完成分布式爬虫
 - 自动存储元数据，分析统计和补爬都很方便
 - 适合多站点开发，每个爬虫独立定制，互不影响
-- 扩展简易，通过 job 生成初始请求，根据需要可以启用多个爬虫并行处理
-- 采集数据落地方便，支持多种数据库
+- 调用方便，可以根据传参自定义采集的页数以及启用的爬虫数量
+- 扩展简易，可以根据需要选择采集模式，单机standalone(默认) 或者 分布式cluster
+- 采集数据落地方便，支持多种数据库，只需在spider中启用相关的管道
 
     关系型
     - [x] mysql
@@ -102,11 +109,11 @@ class ScheduledRequest:
 
 如果想切换成分布式爬虫，需要在 spiderman/SP/settings.py 中启用以下配置
 
-<font color='red'> 注意：前提是 所有SLAVE机器的爬虫代码一致、python环境一致，都可以运行爬虫demo </font>
+ <font color='red'>  注意：前提是 所有SLAVE机器的爬虫代码一致、python环境一致，都可以运行爬虫demo </font>
 
 ```python
-# 采集模式
-CRAWL_MODEL = 'cluster'  # standalone 单机 (默认) ; cluster分布式, 需要配置下方的 slaves
+# 采集模式 standalone 单机 (默认);  cluster 分布式 需要配置下方的 slaves
+CRAWL_MODEL = 'cluster'
 ```
 
 | 配置名称 | 意义  | 示例  |
