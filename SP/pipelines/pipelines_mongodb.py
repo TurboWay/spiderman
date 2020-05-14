@@ -12,6 +12,8 @@ from SP.settings import BUCKETSIZE, MONGODB_HOST, MONGODB_PORT, MONGODB_DB
 from SP.utils.make_key import rowkey, bizdate
 from SP.utils.tool import clean
 
+logger = logging.getLogger(__name__)
+
 
 class MongodbPipeline(object):
 
@@ -61,7 +63,7 @@ class MongodbPipeline(object):
                             value = clean(value)
                         except Exception as e:
                             value = 'ERROR'
-                            logging.error(f"rdbm入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
+                            logger.error(f"入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
                         finally:
                             new_item[key] = value
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
@@ -70,7 +72,7 @@ class MongodbPipeline(object):
                     new_items.append(new_item)
                 try:
                     self.mongodb[tablename].insert_many(new_items)
-                    logging.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
+                    logger.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
                     items.clear()  # 清空桶
                 except Exception as e:
-                    logging.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
+                    logger.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")

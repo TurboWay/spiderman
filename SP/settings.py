@@ -39,6 +39,16 @@ ENGION_CONFIG = [
     'sqlite:///D:/GitHub/spiderman/foo.db'  # sqlite
 ][0]
 
+# 爬虫slaves配置, SLAVES_BALANCE 和 SLAVES 取一个即可；建议配合 nginx 或者 haproxy, 做个 ssh 的负载均衡
+SLAVES = [
+    # {'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
+    # {'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
+    # {'host': '172.16.122.14', 'port': 22, 'user': 'spider', 'pwd': 'spider'}
+]
+SLAVES_BALANCE = {}  # ssh 负载均衡 like {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}
+SLAVES_ENV = ''  # slave 虚拟环境路径, 如果有用虚拟环境的话 like /home/spider/workspace/venv
+SLAVES_WORKSPACE = ''  # slave 爬虫代码工程路径 like /home/spider/workspace/spiderman/SP
+
 # hbase
 HBASE_HOST = '172.16.122.20'
 HBASE_PORT = 25002

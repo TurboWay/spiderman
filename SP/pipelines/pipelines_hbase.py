@@ -12,6 +12,8 @@ from SP.settings import BUCKETSIZE, HBASE_HOST, HBASE_PORT
 from SP.utils.make_key import rowkey, bizdate
 from SP.utils.tool import clean
 
+logger = logging.getLogger(__name__)
+
 
 class HbasePipeline(object):
 
@@ -30,7 +32,7 @@ class HbasePipeline(object):
             connection = happybase.Connection(host=HBASE_HOST, port=HBASE_PORT, timeout=120000)  # 设置2分钟超时
             return connection
         except Exception as e:
-            logging.error(f"hbase连接失败：{e}")
+            logger.error(f"hbase连接失败：{e}")
 
     def process_item(self, item, spider):
         """
@@ -64,9 +66,9 @@ class HbasePipeline(object):
         for tbname in self.item_table_map.values():
             if tbname.encode('utf-8') not in tables:
                 connection.create_table(tbname, {'cf': dict()})
-                logging.info(f"表创建成功 <= 表名:{tbname}")
+                logger.info(f"表创建成功 <= 表名:{tbname}")
             else:
-                logging.info(f"表已存在 <= 表名:{tbname}")
+                logger.info(f"表已存在 <= 表名:{tbname}")
         connection.close()
 
     def buckets2db(self, bucketsize=100, spider_name=''):
@@ -88,7 +90,7 @@ class HbasePipeline(object):
                             value = clean(value)
                         except Exception as e:
                             value = 'ERROR'
-                            logging.error(f"hbase入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
+                            logger.error(f"入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
                         finally:
                             values['cf:' + key] = value
                     values['cf:bizdate'] = self.bizdate  # 增加非业务字段
@@ -97,9 +99,9 @@ class HbasePipeline(object):
                     bat.put(keyid, values)  # 将清洗后的桶数据 添加到批次
                 try:
                     bat.send()  # 批次入库
-                    logging.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
+                    logger.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
                     items.clear()  # 清空桶
                 except Exception as e:
-                    logging.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
+                    logger.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
                 finally:
                     connection.close()

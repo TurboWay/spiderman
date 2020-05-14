@@ -5,10 +5,11 @@
 
 import os
 import sys
-from SP_JOBS.job import *
-from SP.spiders.zhifang import zhifang_Spider
+import getopt
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from SP_JOBS.job import *
+from SP.spiders.zhifang import zhifang_Spider
 
 
 class zhifang_job(SPJob):
@@ -39,10 +40,20 @@ class zhifang_job(SPJob):
 
 
 if __name__ == "__main__":
-    pages = 1
+    # 采集页数
+    pages = 5
+    # 爬虫数量
+    num = 1
 
-    if sys.argv.__len__() >= 2:
-        pages = int(sys.argv[1])
-        zhifang_job().make_job(pages)
-    else:
-        zhifang_job().run_job(pages)
+    # 支持传参调用
+    opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num="])
+    for op, value in opts:
+        if op in ("-p", "--pages"):
+            pages = int(value)
+        elif op in ("-n", "--num"):
+            num = int(value)
+
+    # 执行采集
+    job = zhifang_job()
+    job.make_job(pages)
+    job.crawl(num)

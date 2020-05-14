@@ -66,8 +66,9 @@ class ScheduledRequest:
     cd spiderman；python SP_JOBS/zhifang_job.py
 
 
-### 使用方法
-新增爬虫时，运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job.py 文件；
+### 快速开始（新增爬虫）
+
+运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job.py 文件；
 
 | 类别 | 路径  | 说明  |
 | ------------ | ------------ | ------------ |
@@ -76,7 +77,42 @@ class ScheduledRequest:
 | items     | SP/items/spidername_items.py          | 定义字段  |
 | pipelines | SP/pipelines/spidername_pipelines.py  | 定义表映射、字段类型  |
 
-运行 SP_JOBS/spidername_job.py， 执行爬虫
+直接执行 python SP_JOBS/spidername_job.py
+
+or
+
+支持动态传参（参数说明 -p 采集页数， -n 启用爬虫数量）
+
+python SP_JOBS/spidername_job.py -p 10 -n 1
+
+
+### 快速开始（补爬）
+
+运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job_patch.py 文件；
+
+| 类别 | 路径  | 说明  |
+| ------------ | ------------ | ------------ |
+| job | SP_JOBS/spidername_job_patch.py  | 编写补爬请求 |
+
+直接执行 python SP_JOBS/spidername_job_patch.py
+
+
+
+### 分布式爬虫扩展
+
+采集模式有两种： 单机 standalone(默认) 和 分布式 cluster
+
+启用分布式爬虫前提：所有机器爬虫代码一致、python环境一致、所有配置一致
+
+启用分布式爬虫设置, 在 spiderman/SP/settings.py 中启用以下配置，即为 分布式爬虫模式
+
+
+| 配置名称 | 意义  | 示例  |
+| ------------ | ------------ | ------------ |
+| SLAVES       | 【二选一】爬虫机器配置列表  | [{'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'}，<br>{'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'} ] |
+| SLAVES_BALANCE | 【二选一】爬虫机器配置(ssh负载均衡) | {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}  |
+| SLAVES_ENV     | 【可选】爬虫机器虚拟环境路径  | /home/spider/workspace/venv  |
+| SLAVES_WORKSPACE | 【必填】爬虫机器代码工程路径  | /home/spider/workspace/spiderman/SP  |
 
 
 ### 注意事项
@@ -85,6 +121,6 @@ class ScheduledRequest:
 
 ### TODO
 - ~~支持更多类型的数据库，比如 mongodb~~
-- 增加通用的补爬处理方法
-- 增加分布式爬虫调用方法
+- ~~增加通用的补爬处理方法~~
+- ~~增加分布式爬虫调用方法~~
 - 增加 kafka 调用方法，实现实时采集、监控预警

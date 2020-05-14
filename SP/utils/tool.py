@@ -8,7 +8,11 @@
 import re
 import time
 import base64
+import paramiko
 from hashlib import md5
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from SP.settings import ENGION_CONFIG
 
 
 def clean(value):
@@ -129,3 +133,42 @@ def url_check(url, dirty_words=None):
         if keyword in url:
             return False
     return True
+
+
+def rdbm_execute(sql):
+    """
+    执行sql
+    :param sql:
+    :return:
+    """
+    engine = create_engine(ENGION_CONFIG)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    rows = session.execute(sql).fetchall()
+    session.close()
+    return rows
+
+
+# ssh 执行命令
+def ssh(slave, cmd):
+    """
+    :param slave: dict
+        {'host': 'xxx.xx.xxx.xx', 'port': 22, 'user': 'xx', 'pwd': 'xx'}
+    :param cmd: command
+    :return: status, msg, host
+        status == 0 success
+        else fail
+    """
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname=slave['host'], port=slave['port'], username=slave['user'], password=slave['pwd'])
+    # 运行 cmd
+    stdin, stdout, stderr = ssh.exec_command(cmd)
+    channel = stdout.channel
+    status = channel.recv_exit_status()
+    msg = stdout.read().decode('utf-8') + stderr.read().decode('utf-8')
+    # 获取 slave的 机器名
+    stdin, stdout, stderr = ssh.exec_command("hostname")
+    host = stdout.read().decode('utf-8')
+    ssh.close()
+    return status, msg, host

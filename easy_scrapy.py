@@ -203,6 +203,9 @@ job = """#!/usr/bin/env python3
 
 import os
 import sys
+import getopt
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from SP_JOBS.job import *
 from SP.spiders.${spidername} import ${spidername}_Spider
 
@@ -237,14 +240,142 @@ class ${spidername}_job(SPJob):
 
 
 if __name__ == "__main__":
+    # 采集页数
     pages = 1
+    # 爬虫数量
+    num = 1
 
-    if sys.argv.__len__() >= 2:
-        pages = int(sys.argv[1])
-        ${spidername}_job().make_job(pages)
-    else:
-        ${spidername}_job().run_job(pages)
+    # 支持传参调用
+    opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num="])
+    for op, value in opts:
+        if op in ("-p", "--pages"):
+            pages = int(value)
+        elif op in ("-n", "--num"):
+            num = int(value)
+
+    # 执行采集
+    job = ${spidername}_job()
+    job.make_job(pages)
+    job.crawl(num)
 """
+
+job_patch = """#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# @Time : ${time}
+# @Author : ${author}
+
+import os
+import sys
+import getopt
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from SP_JOBS.job import *
+from SP.spiders.${spidername} import ${spidername}_Spider
+from SP.utils.tool import rdbm_execute
+
+
+class ${spidername}_job(SPJob):
+
+    def __init__(self):
+        super().__init__(spider_name=${spidername}_Spider.name)
+        self.delete()
+
+    def make_list_job(self, pages):
+        sql = \"\"\"
+               select pagenum 
+               from ${spidername}_list 
+               group by pagenum 
+                \"\"\"
+        rows = rdbm_execute(sql)
+        rows = [int(row[0]) for row in rows]
+        ret = list(set(range(1, pages + 1)) - set(rows))  # 未采集的页码
+        for pagenum in ret:
+            url = ''
+            req = ScheduledRequest(
+                url=url,  # 请求地址
+                method='GET',  # 请求方式  GET/POST
+                callback='list',  # 回调函数标识
+                body={},  # 如果是POST，在这边填写post字典
+                meta={
+                    'pagenum': pagenum,  # 页码
+                    # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
+                    # 'headers': {},      # 一般反爬
+                    # 'cookies': {},      # 一般反爬
+                    # 'payload': {},      # request payload 传输方式
+                    # 'splash': {'wait': 2}  # js加载、异步加载渲染
+                }
+            )
+            self.reqs.append(req)
+        self.push()
+
+    def make_detail_job(self):
+        sql = \"\"\"
+                select a.detail_full_url, a.pagenum, a.pkey
+                from ${spidername}_list a 
+                left join ${spidername}_detail b on a.pkey = b.fkey
+                where b.keyid is null
+                \"\"\"
+        rows = rdbm_execute(sql)
+        for row in rows:
+            detail_full_url, pagenum, pkey = row
+            req = ScheduledRequest(
+                url=detail_full_url,  
+                method='GET',
+                callback='detail',
+                body={},       # 如果是POST，在这边填写post字典
+                meta={
+                    'pagenum': pagenum,  # 页码
+                    'fkey': pkey,  # 外键
+                    # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
+                    # 'headers': {},      # 一般反爬
+                    # 'cookies': {},      # 一般反爬
+                    # 'payload': {},      # request payload 传输方式
+                    # 'splash': {'wait': 2}  # js加载、异步加载渲染
+                }
+                )
+            self.reqs.append(req)
+        self.push()
+        
+        
+if __name__ == "__main__":
+    # 采集页数
+    pages = 1
+    # 爬虫数量
+    num = 1
+
+    # 支持传参调用
+    opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num="])
+    for op, value in opts:
+        if op in ("-p", "--pages"):
+            pages = int(value)
+        elif op in ("-n", "--num"):
+            num = int(value)
+
+    # 执行采集
+    job = ${spidername}_job()
+    job.make_list_job(pages)    # list 补爬
+    job.make_detail_job()       # detail 补爬
+    job.crawl(num)
+"""
+
+
+def spider_info(spidername):
+    info = {}
+    info['spider_path'] = f'{os.getcwd()}\SP\spiders\{spidername}.py'
+    info['item_path'] = f'{os.getcwd()}\SP\items\{spidername}_items.py'
+    info['pipeline_path'] = f'{os.getcwd()}\SP\pipelines\{spidername}_pipelines.py'
+    info['job_path'] = f'{os.getcwd()}\SP_JOBS\{spidername}_job.py'
+    info['job_patch'] = f'{os.getcwd()}\SP_JOBS\{spidername}_job_patch.py'
+    return info
+
+
+def delete_spider(spidername):
+    info = spider_info(spidername)
+    for path in info.values():
+        if os.path.exists(path):
+            os.remove(path)
+            print(f"{path} 删除成功")
+
 
 def open_in_pycharm(job_path, pycharm):
     if not pycharm:
@@ -254,6 +385,7 @@ def open_in_pycharm(job_path, pycharm):
         os.system(cmd)
         return
     print("your pycharm not in utils.tool.open_in_pycharm, please add your PyCharm exe or link")
+
 
 def new(**kwargs):
     """
@@ -271,12 +403,13 @@ def new(**kwargs):
     if not spidername:
         raise NameError("spidername不允许为空, 请检查！")
 
-    spider_path = f'{os.getcwd()}\SP\spiders\{spidername}.py'
-    item_path = f'{os.getcwd()}\SP\items\{spidername}_items.py'
-    pipeline_path = f'{os.getcwd()}\SP\pipelines\{spidername}_pipelines.py'
-    job_path =  f'{os.getcwd()}\SP_JOBS\{spidername}_job.py'
+    info = spider_info(spidername)
+    if os.path.exists(info['job_path']):
+        print((f"{spidername}已存在！"))
+        open_in_pycharm(info['job_path'], pycharm)  # 自动打开job文件
+        return
 
-    for path in [spider_path, item_path, pipeline_path, job_path]:
+    for path in info.values():
         if os.path.exists(path):
             raise NameError(f"{path}已存在, 请检查！")
 
@@ -293,10 +426,10 @@ def new(**kwargs):
         job = job.replace(key, val)
 
     path_map = {
-        spider_path: spider,
-        item_path: item,
-        pipeline_path: pipeline,
-        job_path: job
+        info['spider_path']: spider,
+        info['item_path']: item,
+        info['pipeline_path']: pipeline,
+        info['job_path']: job
     }
 
     # 创建文件
@@ -304,20 +437,66 @@ def new(**kwargs):
         with open(path, 'w', encoding='utf-8') as f:
             f.write(st)
 
-    msg = f"爬虫创建成功，请前往调整修改：\n1、{spider_path}\n2、{item_path}\n3、{pipeline_path}\n4、{job_path}"
+    pathmsg = '\n'.join(path_map.keys())
+    msg = f"爬虫创建成功，请前往调整修改:\n{pathmsg}"
+    print(msg)
+    open_in_pycharm(info['job_path'], pycharm)  # 自动打开job文件
+    # open_in_pycharm(spider_path)  # 自动打开spider文件
+
+
+def patch(**kwargs):
+    """
+        :param kwargs: 新增补爬job
+        :return:
+        """
+    spidername = kwargs.get('spidername')
+    author = kwargs.get('author')
+    job_patch = kwargs.get('job_patch')
+    pycharm = kwargs.get('pycharm')
+
+    if not spidername:
+        raise NameError("spidername不允许为空, 请检查！")
+
+    job_path = f'{os.getcwd()}\SP_JOBS\{spidername}_job_patch.py'
+    if os.path.exists(job_path):
+        print(f"{job_path}已存在!")
+        open_in_pycharm(job_path, pycharm)  # 自动打开job文件
+        return
+
+    replace_map = {
+        '${spidername}': spidername,
+        '${author}': author,
+        '${time}': time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+    }
+
+    # 创建文件
+    with open(job_path, 'w', encoding='utf-8') as f:
+        for key, val in replace_map.items():
+            job_patch = job_patch.replace(key, val)
+        f.write(job_patch)
+
+    msg = f"补爬job创建成功，请前往调整修改：{job_path}"
     print(msg)
     open_in_pycharm(job_path, pycharm)  # 自动打开job文件
     # open_in_pycharm(spider_path)  # 自动打开spider文件
 
 
 if __name__ == "__main__":
-    # ---------------------------------------------------------- # 新建爬虫
-    # 【必填】爬虫名字
+    # 【必填】爬虫名称
     spidername = ''
 
-    # 1、若爬虫已存在，则打开对应job文件；若不存在，则自动创建并打开对应job文件
+    # 是否生成补爬job_patch文件, 默认 False
+    make_job_patch = False
+
+    # 删除爬虫的所有代码文件，有时候可能名字没取好，强迫症。。。
+    # delete_spider(spidername)
+
+    # 个人配置
     author = 'way'
     pycharm = r"C:\Users\Public\Desktop\PyCharm Community Edition 2019.3.1 x64.lnk"
+
+    # 若爬虫已存在，则打开对应job文件；若不存在，则自动创建并打开对应job文件
+    # ---------------------------------------------------------- # 新建爬虫
     new(
         spidername=spidername,
         author=author,
@@ -328,7 +507,11 @@ if __name__ == "__main__":
         pycharm=pycharm,
     )
 
-
-
-
-
+    # ---------------------------------------------------------- # 新建补爬job
+    if make_job_patch:
+        patch(
+            spidername=spidername,
+            author=author,
+            job_patch=job_patch,
+            pycharm=pycharm,
+        )
