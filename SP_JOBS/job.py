@@ -11,7 +11,7 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from SP.utils.make_jobs import ScheduledRequest, RedisCtrl
 from SP.utils.ctrl_ssh import SSH
-from SP.settings import SLAVES, SLAVES_BALANCE, SLAVES_ENV, SLAVES_WORKSPACE
+from SP.settings import CRAWL_MODEL, SLAVES, SLAVES_BALANCE, SLAVES_ENV, SLAVES_WORKSPACE
 
 logger = logging.getLogger("spiderman")
 logger.setLevel(logging.INFO)
@@ -90,8 +90,11 @@ class SPJob:
             logger.info(f"{self.redis_key} 中没有待执行的任务, 请检查！")
             return
 
-        if SLAVES or SLAVES_BALANCE:
+        if CRAWL_MODEL.lower() == 'cluster':
             logger.name = "spiderman.model.cluster"
+            if not (SLAVES or SLAVES_BALANCE):
+                logger.error(f"请配置 SLAVES 机器！")
+                return
             logger.info(f"初始任务数: {size} 启动爬虫数量: {num}")
             pool = ThreadPoolExecutor(max_workers=num)
             for i in pool.map(self.ssh_run, [i for i in range(num)]):

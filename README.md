@@ -81,11 +81,7 @@ class ScheduledRequest:
 
 直接执行 python SP_JOBS/spidername_job.py
 
-or
-
-支持动态传参（参数说明 -p 采集页数， -n 启用爬虫数量）
-
-python SP_JOBS/spidername_job.py -p 10 -n 1
+或者动态传参（参数说明 -p 采集页数， -n 启用爬虫数量） python SP_JOBS/spidername_job.py -p 10 -n 1
 
 
 ### 快速开始（补爬）
@@ -102,17 +98,21 @@ python SP_JOBS/spidername_job.py -p 10 -n 1
 
 ### 分布式爬虫扩展
 
-采集模式有两种： 单机 standalone(默认) 和 分布式 cluster
+采集模式有两种(在 settings 控制)： 单机 standalone(默认) 和 分布式 cluster
 
-环境前提：所有SLAVE机器的爬虫代码一致、python环境一致
+如果想切换成分布式爬虫，需要在 spiderman/SP/settings.py 中启用以下配置
 
-满足前提后，在 spiderman/SP/settings.py 中启用以下配置，即为 分布式爬虫模式
+<font color='red'> 注意：前提是 所有SLAVE机器的爬虫代码一致、python环境一致，都可以运行爬虫demo </font>
 
+```python
+# 采集模式
+CRAWL_MODEL = 'cluster'  # standalone 单机 (默认) ; cluster分布式, 需要配置下方的 slaves
+```
 
 | 配置名称 | 意义  | 示例  |
 | ------------ | ------------ | ------------ |
 | SLAVES       | 【二选一】爬虫机器配置列表  | [{'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'}，<br>{'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'} ] |
-| SLAVES_BALANCE | 【二选一】爬虫机器配置(ssh负载均衡) | {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}  |
+| SLAVES_BALANCE | 【二选一】爬虫机器配置(ssh负载均衡) | {'host': '172.16.122.11', 'port': 2202, 'user': 'spider', 'pwd': 'spider'}  |
 | SLAVES_ENV     | 【可选】爬虫机器虚拟环境路径  | /home/spider/workspace/spiderman/venv  |
 | SLAVES_WORKSPACE | 【必填】爬虫机器代码工程路径  | /home/spider/workspace/spiderman  |
 
