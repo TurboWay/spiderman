@@ -6,15 +6,39 @@
 
 基于scrapy-redis的通用分布式爬虫框架
 
+
+
+****
+## 目录
+* [效果图](#demo采集效果)
+
+    * [采集效果](#demo采集效果)
+    * [分布式爬虫运行](#cluster模式)
+    * [单机爬虫运行](#standalone模式)
+    
+* [介绍](#功能)
+    * [功能](#功能)
+    * [原理说明](#原理说明)    
+
+* [快速开始](#下载安装)
+    * [下载安装](#下载安装)
+    * [如何开发一个新爬虫](#如何开发一个新爬虫)
+    * [如何进行补爬](#如何进行补爬)
+    * [如何扩展分布式爬虫](#如何扩展分布式爬虫)
+
+* [其它](#注意事项)
+    * [注意事项](#注意事项)
+
+
 ### demo采集效果
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/file.jpg)
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
 
-### 分布式爬虫运行
+### cluster模式
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/cluster.jpg)
 
-### 单机爬虫运行
+### standalone模式
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
 
 ### 功能
@@ -75,7 +99,7 @@ class ScheduledRequest:
 6. 运行demo示例 python SP_JOBS/zhifang_job.py
 
 
-### 快速开始（新增爬虫）
+### 如何开发一个新爬虫
 
 运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job.py 文件；
 
@@ -91,7 +115,7 @@ class ScheduledRequest:
 或者动态传参（参数说明 -p 采集页数， -n 启用爬虫数量） python SP_JOBS/spidername_job.py -p 10 -n 1
 
 
-### 快速开始（补爬）
+### 如何进行补爬
 
 运行 easy_scrapy.py 会根据模板自动生成以下代码文件，并自动在 pycharm 打开 spidername_job_patch.py 文件；
 
@@ -103,7 +127,7 @@ class ScheduledRequest:
 
 
 
-### 分布式爬虫扩展
+### 如何扩展分布式爬虫
 
 采集模式有两种(在 settings 控制)： 单机 standalone(默认) 和 分布式 cluster
 
