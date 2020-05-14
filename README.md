@@ -102,9 +102,9 @@ python SP_JOBS/spidername_job.py -p 10 -n 1
 
 采集模式有两种： 单机 standalone(默认) 和 分布式 cluster
 
-启用分布式爬虫前提：所有机器爬虫代码一致、python环境一致、所有配置一致
+环境前提：所有SLAVE机器的爬虫代码一致、python环境一致
 
-启用分布式爬虫设置, 在 spiderman/SP/settings.py 中启用以下配置，即为 分布式爬虫模式
+满足前提后，在 spiderman/SP/settings.py 中启用以下配置，即为 分布式爬虫模式
 
 
 | 配置名称 | 意义  | 示例  |
