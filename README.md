@@ -59,11 +59,13 @@ class ScheduledRequest:
 
 
 ### 下载安装
-1. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requestsment.txt
-2. 修改配置 spiderman/SP/settings.py
-3. 运行demo示例
 
-    cd spiderman；python SP_JOBS/zhifang_job.py
+1. git clone https://github.com/TurboWay/spiderman.git; cd spiderman;
+2. 【不使用虚拟环境的话，可以跳过步骤23】virtualenv -p /usr/bin/python3 --no-site-packages venv
+3. 【不使用虚拟环境的话，可以跳过步骤23】source venv/bin/activate
+4. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requestsment.txt
+5. 修改配置 vi SP/settings.py
+6. 运行demo示例 python SP_JOBS/zhifang_job.py
 
 
 ### 快速开始（新增爬虫）
@@ -111,8 +113,8 @@ python SP_JOBS/spidername_job.py -p 10 -n 1
 | ------------ | ------------ | ------------ |
 | SLAVES       | 【二选一】爬虫机器配置列表  | [{'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'}，<br>{'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'} ] |
 | SLAVES_BALANCE | 【二选一】爬虫机器配置(ssh负载均衡) | {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}  |
-| SLAVES_ENV     | 【可选】爬虫机器虚拟环境路径  | /home/spider/workspace/venv  |
-| SLAVES_WORKSPACE | 【必填】爬虫机器代码工程路径  | /home/spider/workspace/spiderman/SP  |
+| SLAVES_ENV     | 【可选】爬虫机器虚拟环境路径  | /home/spider/workspace/spiderman/venv  |
+| SLAVES_WORKSPACE | 【必填】爬虫机器代码工程路径  | /home/spider/workspace/spiderman  |
 
 
 ### 注意事项

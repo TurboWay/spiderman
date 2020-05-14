@@ -10,10 +10,10 @@
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 # 日志
-LOGDIR = 'D:/GitHub/spiderman/SP_log'
+LOGDIR = '/home/spider/workspace/spiderman/SP_log'  # 'D:/GitHub/spiderman/SP_log'
 
 # 附件存放目录
-FILES_STORE = 'D:/GitHub/spiderman/Files'
+FILES_STORE = '/home/spider/workspace/spiderman/Files'  # 'D:/GitHub/spiderman/Files'
 
 BOT_NAME = 'SP'
 
@@ -21,11 +21,11 @@ SPIDER_MODULES = ['SP.spiders']
 NEWSPIDER_MODULE = 'SP.spiders'
 
 # redis
-REDIS_HOST = '127.0.0.1'
+REDIS_HOST = '172.16.122.11'
 REDIS_PORT = 6379
 
 # splash服务url
-SPLASH_URL = 'http://172.16.122.11:9050'
+SPLASH_URL = 'http://127.0.0.1:8050'
 
 # bucketsize 入库批次大小，每100条入库一次
 BUCKETSIZE = 100
@@ -36,18 +36,9 @@ ENGION_CONFIG = [
     # 'postgresql://user:pwd@127.0.0.1:5432/spider_db',  # postgresql
     # 'oracle://user:pwd@127.0.0.1:1521/spider_db',  # oracle
     # 'mssql+pymssql://user:pwd@127.0.0.1:1433/spider_db',  # sqlserver
-    'sqlite:///D:/GitHub/spiderman/foo.db'  # sqlite
+    # 'sqlite:///D:/GitHub/spiderman/foo.db'  # sqlite
+    'postgresql://spider:spider@172.16.122.19:5432/spider_db'
 ][0]
-
-# 爬虫slaves配置, SLAVES_BALANCE 和 SLAVES 取一个即可；建议配合 nginx 或者 haproxy, 做个 ssh 的负载均衡
-SLAVES = [
-    # {'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
-    # {'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
-    # {'host': '172.16.122.14', 'port': 22, 'user': 'spider', 'pwd': 'spider'}
-]
-SLAVES_BALANCE = {}  # ssh 负载均衡 like {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}
-SLAVES_ENV = ''  # slave 虚拟环境路径, 如果有用虚拟环境的话 like /home/spider/workspace/venv
-SLAVES_WORKSPACE = ''  # slave 爬虫代码工程路径 like /home/spider/workspace/spiderman/SP
 
 # hbase
 HBASE_HOST = '172.16.122.20'
@@ -57,6 +48,19 @@ HBASE_PORT = 25002
 MONGODB_HOST = '127.0.0.1'
 MONGODB_PORT = 27017
 MONGODB_DB = 'spider_db'
+
+# 爬虫slaves配置, SLAVES_BALANCE 和 SLAVES 取一个即可；建议配合 nginx 或者 haproxy, 做个 ssh 的负载均衡
+SLAVES = [
+    {'host': '172.16.122.11', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
+    {'host': '172.16.122.12', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
+    {'host': '172.16.122.13', 'port': 22, 'user': 'spider', 'pwd': 'spider'},
+    {'host': '172.16.122.14', 'port': 22, 'user': 'spider', 'pwd': 'spider'}
+]
+SLAVES_BALANCE = {
+    'host': '172.16.122.11', 'port': 2202, 'user': 'spider', 'pwd': 'spider'
+}  # ssh 负载均衡 like {'host': '172.16.122.11', 'port': 2201, 'user': 'spider', 'pwd': 'spider'}
+SLAVES_ENV = '/home/spider/workspace/spiderman/venv'  # slave 虚拟环境路径, 如果有用虚拟环境的话 like /home/spider/workspace/venv
+SLAVES_WORKSPACE = '/home/spider/workspace/spiderman'  # slave 爬虫代码工程路径 like /home/spider/workspace/spiderman/SP
 
 # scrapy_redis
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"

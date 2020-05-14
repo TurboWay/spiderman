@@ -10,8 +10,8 @@ import random
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from SP.utils.make_jobs import ScheduledRequest, RedisCtrl
+from SP.utils.ctrl_ssh import SSH
 from SP.settings import SLAVES, SLAVES_BALANCE, SLAVES_ENV, SLAVES_WORKSPACE
-from SP.utils.tool import ssh
 
 logger = logging.getLogger("spiderman")
 logger.setLevel(logging.INFO)
@@ -55,21 +55,25 @@ class SPJob:
         self.redisctrl.keys_del([self.redis_key, self.redis_dupefilter, self.redis_requests])
 
     # cluster模式下：ssh 启动slave爬虫
-    def ssh_run(self):
-        slave = random.sample(SLAVES, 1) if not SLAVES_BALANCE else SLAVES_BALANCE
+    def ssh_run(self, *args):
+        slave = random.sample(SLAVES, 1)[0] if not SLAVES_BALANCE else SLAVES_BALANCE
         if SLAVES_ENV:
             cmd = f'source {SLAVES_ENV}/bin/activate; cd {SLAVES_WORKSPACE}; scrapy crawl {self.spider_name};'
         else:
             cmd = f"cd {SLAVES_WORKSPACE}; scrapy crawl {self.spider_name};"
-        status, msg, host = ssh(slave, cmd)
+        ssh = SSH(slave)
+        hostname = ssh.hostname
+        logger.info(f"slave:{hostname} 爬虫正在采集...")
+        status, msg_out, msg_error = ssh.execute(cmd)
         if status != 0:
-            logger.error(f"slave:{host} 爬虫执行失败：{msg}")
+            logger.error(f"slave:{hostname} 爬虫执行失败：{msg_out + msg_error}")
         else:
-            logger.info(f"slave:{host} 爬虫执行成功")
+            logger.info(f"slave:{hostname} 爬虫执行成功")
 
     # standalone模式下：启动爬虫
     def run(self, *args):
         cmd = f"scrapy crawl {self.spider_name}"
+        logger.info(f"爬虫正在采集...")
         p = subprocess.Popen(cmd, shell=True)
         p.communicate()
         stdout, stderr = p.communicate()  # 忽视输出
