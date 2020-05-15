@@ -158,6 +158,11 @@ CRAWL_MODEL = 'cluster'
 
 运行 easy_meta.py 自动生成当前项目所有爬虫的元数据, 默认记录到sqlite meta.db, 可以在 setting 中自行配置; 
 
+```python
+# 爬虫 meta
+META_ENGION = 'sqlite:///meta.db'
+```
+
 元数据表meta字典如下：
 
 | 字段名 | 类型 | 注释  |
