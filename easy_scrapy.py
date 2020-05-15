@@ -16,7 +16,7 @@ item = """#!/usr/bin/env python3
 from SP.items.items import *
 
 
-class ${spidername}_list_Item(scrapy.Item):
+class ${spidername}_list_Item(scrapy.Item):  # 列表页
     # define the fields for your item here like:
     # name = scrapy.Field()
     
@@ -26,7 +26,7 @@ class ${spidername}_list_Item(scrapy.Item):
     pagenum = scrapy.Field()  # 通用字段：页码
 
 
-class ${spidername}_detail_Item(scrapy.Item):
+class ${spidername}_detail_Item(scrapy.Item):  # 详情页
     # define the fields for your item here like:
     # name = scrapy.Field()
     
@@ -35,7 +35,7 @@ class ${spidername}_detail_Item(scrapy.Item):
     pagenum = scrapy.Field()  # 通用字段：页码
 
 
-class ${spidername}_file_Item(SPfileItem):
+class ${spidername}_file_Item(SPfileItem):  # 附件表
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
@@ -92,6 +92,7 @@ spider = """#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time : ${time}
 # @Author : ${author}
+# @Describe : ${describe}
 
 from bs4 import BeautifulSoup
 from SP.spiders.SPRedisSpider import SPRedisSpider
@@ -393,6 +394,7 @@ def new(**kwargs):
     :return:
     """
     spidername = kwargs.get('spidername')
+    describe = kwargs.get('describe')
     author = kwargs.get('author')
     item = kwargs.get('item')
     pipeline = kwargs.get('pipeline')
@@ -415,6 +417,7 @@ def new(**kwargs):
 
     replace_map = {
         '${spidername}': spidername,
+        '${describe}': describe,
         '${author}': author,
         '${time}': time.strftime("%Y-%m-%d %H:%M", time.localtime()),
     }
@@ -485,6 +488,9 @@ if __name__ == "__main__":
     # 【必填】爬虫名称
     spidername = ''
 
+    # 【可选】爬虫简单描述
+    describe = ''
+
     # 是否生成补爬job_patch文件, 默认 False
     make_job_patch = False
 
@@ -499,6 +505,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------- # 新建爬虫
     new(
         spidername=spidername,
+        describe=describe,
         author=author,
         item=item,
         pipeline=pipeline,

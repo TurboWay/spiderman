@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time : 2020-05-09 15:31
 # @Author : way
+# @Describe : 智房网
 
 from bs4 import BeautifulSoup
 from SP.spiders.SPRedisSpider import SPRedisSpider

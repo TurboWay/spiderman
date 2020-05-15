@@ -30,6 +30,9 @@ SPLASH_URL = 'http://127.0.0.1:8050'
 # bucketsize 入库批次大小，每100条入库一次
 BUCKETSIZE = 100
 
+# 爬虫 meta
+META_ENGION = 'sqlite:///meta.db'
+
 # rdbms
 ENGION_CONFIG = [
     # 'mysql://user:pwd@127.0.0.1:3306/spider_db?charset=utf8',  # mysql

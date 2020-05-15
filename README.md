@@ -13,8 +13,9 @@
 * [效果图](#demo采集效果)
 
     * [采集效果](#demo采集效果)
+    * [爬虫元数据](#爬虫元数据)
     * [分布式爬虫运行](#cluster模式)
-    * [单机爬虫运行](#standalone模式)
+    * [单机爬虫运行](#standalone模式)    
     
 * [介绍](#功能)
     * [功能](#功能)
@@ -25,7 +26,8 @@
     * [如何开发一个新爬虫](#如何开发一个新爬虫)
     * [如何进行补爬](#如何进行补爬)
     * [如何扩展分布式爬虫](#如何扩展分布式爬虫)
-
+    * [如何管理爬虫元数据](#如何管理爬虫元数据)
+    
 * [其它](#注意事项)
     * [注意事项](#注意事项)
 
@@ -35,11 +37,15 @@
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
 
+### 爬虫元数据
+![image](https://github.com/TurboWay/spiderman/blob/master/example/meta.jpg)
+
 ### cluster模式
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/cluster.jpg)
 
 ### standalone模式
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
+
 
 ### 功能
 
@@ -148,13 +154,33 @@ CRAWL_MODEL = 'cluster'
 | SLAVES_WORKSPACE | 【必填】爬虫机器代码工程路径  | /home/spider/workspace/spiderman  |
 
 
+### 如何管理爬虫元数据
+
+运行 easy_meta.py 自动生成当前项目所有爬虫的元数据, 默认记录到sqlite meta.db, 可以在 setting 中自行配置; 
+
+元数据表meta字典如下：
+
+| 字段名 | 类型 | 注释  |
+| ------------ | ------------ | ------------ |
+| spider        | varchar(50) | 爬虫名 |
+| spider_comment| varchar(100) | 爬虫描述 |
+| table         | varchar(50) | 表名 |
+| table_comment | varchar(100) | 表描述 |
+| col           | varchar(50) | 字段名 |
+| col_comment   | varchar(100) | 字段描述 |
+| author        | varchar(20) | 开发人员 |
+| addtime       | varchar(20) | 开发时间 |
+| insertime     | varchar(20) | 元数据更新时间 |
+
+
 ### 注意事项
-字段名称不能使用 isload、ctime、bizdate等字段，因为这些字段被作为通用字段，避免冲突
+1. 字段名称不能使用 isload、ctime、bizdate等字段，因为这些字段被作为通用字段，避免冲突
+2. items 文件每个字段建议添加注释，生成元数据时，会将注释导入到元数据表，便于管理爬虫
 
 
 ### TODO
 - ~~支持更多类型的数据库，比如 mongodb~~
 - ~~增加通用的补爬处理方法~~
 - ~~增加分布式爬虫调用方法~~
-- 增加爬虫元数据管理方法
+- ~~增加爬虫元数据管理方法~~
 - 增加 kafka 调用方法，实现实时采集、监控预警
