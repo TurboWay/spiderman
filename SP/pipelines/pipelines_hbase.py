@@ -3,14 +3,13 @@
 # @Time : 2019/4/2 9:57
 # @Author : way
 # @Site : all
-# @Describe: 基础类 数据清洗入库 HBASE
+# @Describe: 基础类 数据入库 HBASE
 
 import time
 import logging
 import happybase
 from SP.settings import BUCKETSIZE, HBASE_HOST, HBASE_PORT
 from SP.utils.make_key import rowkey, bizdate
-from SP.utils.tool import clean
 
 logger = logging.getLogger(__name__)
 
@@ -85,14 +84,8 @@ class HbasePipeline(object):
                 for item in items:
                     keyid = rowkey()
                     values = {}
-                    for key, value in item.items():  # 清洗桶数据
-                        try:
-                            value = clean(value)
-                        except Exception as e:
-                            value = 'ERROR'
-                            logger.error(f"入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
-                        finally:
-                            values['cf:' + key] = value
+                    for key, value in item.items():
+                        values['cf:' + key] = value
                     values['cf:bizdate'] = self.bizdate  # 增加非业务字段
                     values['cf:ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     values['cf:spider'] = spider_name

@@ -46,6 +46,7 @@ pipeline = """#!/usr/bin/env python3
 # @Time : ${time}
 # @Author : ${author}
 
+from SP.pipelines.pipelines_kafka import KafkaPipeline as SPKafkaPipeline
 from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
 from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
 from SP.pipelines.pipelines_rdbm import RdbmPipeline as SPRdbmPipeline
@@ -86,6 +87,12 @@ class MongodbPipeline(SPMongodbPipeline):
 
     def __init__(self):
         super().__init__(item_table_map=item_table_map)
+
+
+class KafkaPipeline(SPKafkaPipeline):
+
+    def __init__(self):
+        super().__init__(item_table_map=item_table_map)
 """
 
 spider = """#!/usr/bin/env python3
@@ -114,9 +121,11 @@ class ${spidername}_Spider(SPRedisSpider):
         # 'DOWNLOAD_DELAY': 3,  # 控制下载延迟，默认0
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
-            'SP.pipelines.${spidername}_pipelines.RdbmPipeline': 200,
-            # 'SP.pipelines.${spidername}_pipelines.HbasePipeline': 201
-            # 'SP.pipelines.${spidername}_pipelines.MongodbPipeline': 202
+            # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
+            'SP.pipelines.${spidername}_pipelines.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.${spidername}_pipelines.HbasePipeline': 201  # Hbase
+            # 'SP.pipelines.${spidername}_pipelines.MongodbPipeline': 202  # Mongodb 
+            # 'SP.pipelines.${spidername}_pipelines.KafkaPipeline': 203  # Kafka
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,

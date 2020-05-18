@@ -23,10 +23,12 @@ class zhifang_Spider(SPRedisSpider):
         # 'CONCURRENT_REQUESTS': 5,  # 控制并发数，默认16 
         # 'DOWNLOAD_DELAY': 3,  # 控制下载延迟，默认0
         'ITEM_PIPELINES': {
-            # 'SP.pipelines.pipelines_file.FilePipeline': 100,
-            'SP.pipelines.zhifang_pipelines.RdbmPipeline': 200,
-            # 'SP.pipelines.zhifang_pipelines.HbasePipeline': 201
-            # 'SP.pipelines.zhifang_pipelines.MongodbPipeline': 202,
+            # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
+            # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
+            'SP.pipelines.zhifang_pipelines.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.zhifang_pipelines.HbasePipeline': 201  # Hbase
+            # 'SP.pipelines.zhifang_pipelines.MongodbPipeline': 202,  # Mongodb
+            # 'SP.pipelines.zhifang_pipelines.KafkaPipeline': 203  # Kafka
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,

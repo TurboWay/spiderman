@@ -3,7 +3,7 @@
 # @Time : 2019/4/2 9:57
 # @Author : way
 # @Site : all
-# @Describe: 基础类 数据清洗入库 MYSQL等关系型数据库
+# @Describe: 基础类 数据入库 MYSQL等关系型数据库
 
 import time
 import logging
@@ -12,7 +12,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.types import VARCHAR
 from SP.settings import BUCKETSIZE, ENGION_CONFIG
 from SP.utils.make_key import rowkey, bizdate
-from SP.utils.tool import clean
 
 logger = logging.getLogger(__name__)
 
@@ -93,14 +92,8 @@ class RdbmPipeline(object):
                 for item in items:
                     keyid = rowkey()
                     new_item = {'keyid': keyid}
-                    for key, value in item.items():  # 清洗桶数据
-                        try:
-                            value = clean(value)
-                        except Exception as e:
-                            value = 'ERROR'
-                            logger.error(f"入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
-                        finally:
-                            new_item[key] = value
+                    for key, value in item.items():
+                        new_item[key] = value
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = spider_name

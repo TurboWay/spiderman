@@ -15,7 +15,8 @@
     * [采集效果](#demo采集效果)
     * [爬虫元数据](#爬虫元数据)
     * [分布式爬虫运行](#cluster模式)
-    * [单机爬虫运行](#standalone模式)    
+    * [单机爬虫运行](#standalone模式) 
+    * [kafka实时采集监控示例](#kafka实时采集监控)   
     
 * [介绍](#功能)
     * [功能](#功能)
@@ -27,6 +28,7 @@
     * [如何进行补爬](#如何进行补爬)
     * [如何扩展分布式爬虫](#如何扩展分布式爬虫)
     * [如何管理爬虫元数据](#如何管理爬虫元数据)
+    * [如何配合kafka做实时采集监控](#如何配合kafka做实时采集监控)
     
 * [其它](#注意事项)
     * [注意事项](#注意事项)
@@ -45,6 +47,9 @@
 
 ### standalone模式
 ![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
+
+### kafka实时采集监控
+![image](https://github.com/TurboWay/spiderman/blob/master/example/mon.jpg)
 
 
 ### 功能
@@ -178,14 +183,16 @@ META_ENGION = 'sqlite:///meta.db'
 | insertime     | varchar(20) | 元数据更新时间 |
 
 
+### 如何配合kafka做实时采集监控
+
+1. 配置 kafka（修改 setting 的 KAFKA_SERVERS）
+2. 自定义监控规则（修改编写 kafka_mon.py , 并运行该脚本程序, 开始监控）
+3. 在 spider 中启用 kafka 管道（运行爬虫 job , 开始采集）
+
+
+
 ### 注意事项
 1. 字段名称不能使用 isload、ctime、bizdate等字段，因为这些字段被作为通用字段，避免冲突
 2. items 文件每个字段建议添加注释，生成元数据时，会将注释导入到元数据表，便于管理爬虫
 
 
-### TODO
-- ~~支持更多类型的数据库，比如 mongodb~~
-- ~~增加通用的补爬处理方法~~
-- ~~增加分布式爬虫调用方法~~
-- ~~增加爬虫元数据管理方法~~
-- 增加 kafka 调用方法，实现实时采集、监控预警

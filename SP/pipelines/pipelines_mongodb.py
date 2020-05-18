@@ -3,14 +3,13 @@
 # @Time : 2019/5/12 9:57
 # @Author : way
 # @Site : all
-# @Describe: 基础类 数据清洗入库 mongodb
+# @Describe: 基础类 数据入库 mongodb
 
 import time
 import logging
 from pymongo import MongoClient
 from SP.settings import BUCKETSIZE, MONGODB_HOST, MONGODB_PORT, MONGODB_DB
 from SP.utils.make_key import rowkey, bizdate
-from SP.utils.tool import clean
 
 logger = logging.getLogger(__name__)
 
@@ -58,14 +57,8 @@ class MongodbPipeline(object):
                 for item in items:
                     keyid = rowkey()
                     new_item = {'_id': keyid}
-                    for key, value in item.items():  # 清洗桶数据
-                        try:
-                            value = clean(value)
-                        except Exception as e:
-                            value = 'ERROR'
-                            logger.error(f"入库预处理异常: 表名:{tablename} KeyID:{keyid} 错误原因:{e}")
-                        finally:
-                            new_item[key] = value
+                    for key, value in item.items():
+                        new_item[key] = value
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = spider_name
