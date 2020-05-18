@@ -192,7 +192,7 @@ META_ENGION = 'sqlite:///meta.db'
 
 
 ### 注意事项
-1. 字段名称不能使用 isload、ctime、bizdate等字段，因为这些字段被作为通用字段，避免冲突
+1. 字段名称不能使用 isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
 2. items 文件每个字段建议添加注释，生成元数据时，会将注释导入到元数据表，便于管理爬虫
 
 
