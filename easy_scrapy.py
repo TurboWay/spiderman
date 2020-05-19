@@ -197,9 +197,9 @@ class ${spidername}_Spider(SPRedisSpider):
         file_item = ${spidername}_file_Item()
         # save value for your item here like:
         # detail_item['title'] = soup.find('h1').text
-        file_item['file_url'] = file_url
-        file_item['file_name'] = file_name
-        file_item['file_type'] = get_file_type(file_url, file_name)
+        file_item['file_url'] = ''  # file_url
+        file_item['file_name'] = ''  # file_name
+        file_item['file_type'] = get_file_type(file_item['file_url'], file_item['file_name'])
         # default column
         file_item['fkey'] = response.meta.get('fkey')
         file_item['pagenum'] = response.meta.get('pagenum')
@@ -218,8 +218,6 @@ import getopt
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from SP_JOBS.job import *
 from SP.spiders.${spidername} import ${spidername}_Spider
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 
 class ${spidername}_job(SPJob):
