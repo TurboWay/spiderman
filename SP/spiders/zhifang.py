@@ -25,10 +25,11 @@ class zhifang_Spider(SPRedisSpider):
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
-            'SP.pipelines.zhifang_pipelines.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.zhifang_pipelines.RdbmPipeline': 200,  # 关系型数据库
             # 'SP.pipelines.zhifang_pipelines.HbasePipeline': 201  # Hbase
             # 'SP.pipelines.zhifang_pipelines.MongodbPipeline': 202,  # Mongodb
             # 'SP.pipelines.zhifang_pipelines.KafkaPipeline': 203  # Kafka
+            'SP.pipelines.zhifang_pipelines.ElasticSearchPipeline': 204  # ElasticSearch
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,

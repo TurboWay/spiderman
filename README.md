@@ -72,6 +72,7 @@
     非关系型
     - [x] hbase    
     - [x] mongodb
+    - [x] elasticsearch
     
 - 反爬处理简易，已封装各种反爬中间件
     - [x] 随机UserAgent
@@ -105,7 +106,7 @@ class ScheduledRequest:
 1. git clone https://github.com/TurboWay/spiderman.git; cd spiderman;
 2. 【不使用虚拟环境的话，可以跳过步骤23】virtualenv -p /usr/bin/python3 --no-site-packages venv
 3. 【不使用虚拟环境的话，可以跳过步骤23】source venv/bin/activate
-4. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requestsment.txt
+4. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 5. 修改配置 vi SP/settings.py
 6. 运行demo示例 python SP_JOBS/zhifang_job.py
 

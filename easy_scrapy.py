@@ -46,6 +46,7 @@ pipeline = """#!/usr/bin/env python3
 # @Time : ${time}
 # @Author : ${author}
 
+from SP.pipelines.pipelines_es import ESPipeline as SPESPipeline
 from SP.pipelines.pipelines_kafka import KafkaPipeline as SPKafkaPipeline
 from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
 from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
@@ -93,6 +94,12 @@ class KafkaPipeline(SPKafkaPipeline):
 
     def __init__(self):
         super().__init__(item_table_map=item_table_map)
+
+
+class ESPipeline(SPESPipeline):
+
+    def __init__(self):
+        super().__init__(item_table_map=item_table_map)
 """
 
 spider = """#!/usr/bin/env python3
@@ -126,6 +133,7 @@ class ${spidername}_Spider(SPRedisSpider):
             # 'SP.pipelines.${spidername}_pipelines.HbasePipeline': 201  # Hbase
             # 'SP.pipelines.${spidername}_pipelines.MongodbPipeline': 202  # Mongodb 
             # 'SP.pipelines.${spidername}_pipelines.KafkaPipeline': 203  # Kafka
+            # 'SP.pipelines.${spidername}_pipelines.ElasticSearchPipeline': 204  # ElasticSearch
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,

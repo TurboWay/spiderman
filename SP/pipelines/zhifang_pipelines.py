@@ -3,6 +3,7 @@
 # @Time : 2020-05-09 15:31
 # @Author : way
 
+from SP.pipelines.pipelines_elasticsearch import ElasticSearchPipeline as SPElasticSearchPipeline
 from SP.pipelines.pipelines_kafka import KafkaPipeline as SPKafkaPipeline
 from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
 from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
@@ -47,6 +48,12 @@ class MongodbPipeline(SPMongodbPipeline):
 
 
 class KafkaPipeline(SPKafkaPipeline):
+
+    def __init__(self):
+        super().__init__(item_table_map=item_table_map)
+
+
+class ElasticSearchPipeline(SPElasticSearchPipeline):
 
     def __init__(self):
         super().__init__(item_table_map=item_table_map)

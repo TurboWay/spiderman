@@ -51,8 +51,11 @@ MONGODB_HOST = '127.0.0.1'
 MONGODB_PORT = 27017
 MONGODB_DB = 'spider_db'
 
+# elasticsearch
+ES_SERVERS = ['127.0.0.1:9200', ]
+
 # kafka
-KAFKA_SERVERS = ['172.16.122.17:9092',]
+KAFKA_SERVERS = ['172.16.122.17:9092', ]
 
 # 采集模式
 CRAWL_MODEL = 'standalone'  # standalone 单机 (默认) ; cluster分布式, 需要配置下方的 slaves
