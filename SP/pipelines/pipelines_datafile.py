@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# @Time : 2019/5/12 9:57
+# @Time : 2019/6/4 15:57
 # @Author : way
 # @Site : all
-# @Describe: 基础类 数据入库 mongodb
+# @Describe: 基础类 保存为数据文件
 
+import os
 import time
 import logging
-from pymongo import MongoClient
 from SP.utils.make_key import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
 
 
-class MongodbPipeline(object):
+class DataFilePipeline(object):
 
     def __init__(self, **kwargs):
         self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default)}
         self.bizdate = bizdate  # 业务日期为启动爬虫的日期
         self.buckets_map = {}  # 桶 {table：items}
         self.bucketsize = kwargs.get('BUCKETSIZE')
-        self.mongodb = MongoClient(
-            host=kwargs.get('MONGODB_HOST'),
-            port=kwargs.get('MONGODB_PORT')
-        )[kwargs.get('MONGODB_DB')]
+        self.dir = kwargs.get('FILES_STORE')  # 文件夹路径
+        self.type = kwargs.get('DATAFILE_TYPE', 'csv')  # 文件类型，默认 csv
+        self.delimiter = kwargs.get('DATAFILE_DELIMITER', ',')  # 列分隔符, 默认','
+        self.encoding = kwargs.get('DATAFILE_ENCODING', 'utf-8-sig')  # 文件编码，默认 utf-8-sig
+        self.writeheader = kwargs.get('DATAFILE_HEADER', True) # 是否写入表头列名, 默认 True
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -64,21 +65,37 @@ class MongodbPipeline(object):
         """
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
+                header = ''
                 new_items = []
                 cols, col_default = self.table_cols_map.get(tablename)
                 for item in items:
                     keyid = rowkey()
-                    new_item = {'_id': keyid}
+                    new_item = {'keyid': keyid}
                     for field in cols:
                         value = item.get(field, col_default.get(field))
-                        new_item[field] = str(value)
+                        new_item[field] = str(value).replace(self.delimiter, '').replace('\n', '')
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = spider_name
-                    new_items.append(new_item)
+                    if not header:
+                        header = self.delimiter.join(new_item.keys())
+                    value = self.delimiter.join(new_item.values())
+                    # value = self.delimiter.join([new_item[key] for key in header.split(self.delimiter)])
+                    new_items.append(value)
+
+                fielder = f"{self.dir}/{spider_name}"
+                os.makedirs(fielder, exist_ok=True)
+
+                filename = f"{fielder}/{tablename}.{self.type}"
+                if self.writeheader:
+                    if not os.path.exists(filename) or os.path.getsize(filename) == 0:
+                        with open(filename, 'w', encoding=self.encoding) as f:
+                            f.writelines(header + '\n')
+
                 try:
-                    self.mongodb[tablename].insert_many(new_items)
-                    logger.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
+                    with open(filename, 'a', encoding=self.encoding) as f:
+                        f.write('\n'.join(new_items) + '\n')
+                    logger.info(f"保存成功 <= 文件名:{filename} 记录数:{len(items)}")
                     items.clear()  # 清空桶
                 except Exception as e:
-                    logger.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
+                    logger.error(f"保存失败 <= 文件名:{filename} 错误原因:{e}")

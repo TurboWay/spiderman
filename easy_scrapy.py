@@ -14,93 +14,45 @@ item = """#!/usr/bin/env python3
 # @Author : ${author}
 
 from SP.items.items import *
+from sqlalchemy.types import VARCHAR
 
 
 class ${spidername}_list_Item(scrapy.Item):  # 列表页
+    #  define the tablename
+    name = '${spidername}_list'
+    
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    
     
     # default column
-    detail_full_url = scrapy.Field()  # 通用字段：详情链接
-    pkey = scrapy.Field()  # 通用字段：md5(detail_full_url)
-    pagenum = scrapy.Field()  # 通用字段：页码
+    detail_full_url = scrapy.Field({'idx': 100, 'comment': '详情链接'})  # 通用字段
+    pkey = scrapy.Field({'idx': 101, 'comment': 'md5(detail_full_url)'})  # 通用字段
+    pagenum = scrapy.Field({'idx': 102, 'comment': '页码'})  # 通用字段
 
 
 class ${spidername}_detail_Item(scrapy.Item):  # 详情页
+    #  define the tablename
+    name = 'zhifang_detail'
+    
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    
     
     # default column
-    fkey = scrapy.Field()  # 通用字段：等于list.pkey
-    pagenum = scrapy.Field()  # 通用字段：页码
+    fkey = scrapy.Field({'idx': 100, 'comment': '等于list.pkey'})  # 通用字段
+    pagenum = scrapy.Field({'idx': 101, 'comment': '页码'})  # 通用字段
 
 
 class ${spidername}_file_Item(SPfileItem):  # 附件表
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+    #  define the tablename
+    name = '${spidername}_file'
+    
     pass
 """
 
-pipeline = """#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# @Time : ${time}
-# @Author : ${author}
-
-from SP.pipelines.pipelines_es import ESPipeline as SPESPipeline
-from SP.pipelines.pipelines_kafka import KafkaPipeline as SPKafkaPipeline
-from SP.pipelines.pipelines_mongodb import MongodbPipeline as SPMongodbPipeline
-from SP.pipelines.pipelines_hbase import HbasePipeline as SPHbasePipeline
-from SP.pipelines.pipelines_rdbm import RdbmPipeline as SPRdbmPipeline
-from SP.items.${spidername}_items import *
-from sqlalchemy.types import VARCHAR
-
-# habse爬虫表名定义
-list_table = '${spidername}_list'
-detail_table = '${spidername}_detail'
-file_table = '${spidername}_file'
-
-# Item 和 habse爬虫表 映射
-item_table_map = {
-    ${spidername}_list_Item: list_table,
-    ${spidername}_detail_Item: detail_table,
-    ${spidername}_file_Item: file_table
-}
-
-# 关系型数据库，可以自定义某些字段的类型长度，默认 VARCHAR(length=255)
-col_type = {
-    # 'title': VARCHAR(length=255)
-}
-
-
-class RdbmPipeline(SPRdbmPipeline):
-
-    def __init__(self):
-        super().__init__(item_table_map=item_table_map, col_type=col_type)
-
-
-class HbasePipeline(SPHbasePipeline):
-
-    def __init__(self):
-        super().__init__(item_table_map=item_table_map)
-
-
-class MongodbPipeline(SPMongodbPipeline):
-
-    def __init__(self):
-        super().__init__(item_table_map=item_table_map)
-
-
-class KafkaPipeline(SPKafkaPipeline):
-
-    def __init__(self):
-        super().__init__(item_table_map=item_table_map)
-
-
-class ESPipeline(SPESPipeline):
-
-    def __init__(self):
-        super().__init__(item_table_map=item_table_map)
-"""
 
 spider = """#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -129,11 +81,13 @@ class ${spidername}_Spider(SPRedisSpider):
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
-            'SP.pipelines.${spidername}_pipelines.RdbmPipeline': 200,  # 关系型数据库
-            # 'SP.pipelines.${spidername}_pipelines.HbasePipeline': 201  # Hbase
-            # 'SP.pipelines.${spidername}_pipelines.MongodbPipeline': 202  # Mongodb 
-            # 'SP.pipelines.${spidername}_pipelines.KafkaPipeline': 203  # Kafka
-            # 'SP.pipelines.${spidername}_pipelines.ElasticSearchPipeline': 204  # ElasticSearch
+            # 'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
+            'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.pipelines_hbase.HbasePipeline': 201,  # Hbase
+            # 'SP.pipelines.pipelines_mongodb.MongodbPipeline': 202,  # Mongodb
+            # 'SP.pipelines.pipelines_kafka.KafkaPipeline': 203,  # Kafka
+            # 'SP.pipelines.pipelines_elasticsearch.ElasticSearchPipeline': 204,  # ElasticSearch
+            # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,
@@ -203,11 +157,13 @@ class ${spidername}_Spider(SPRedisSpider):
         yield detail_item
         
         file_item = ${spidername}_file_Item()
+        file_url = soup.find('your xpath').get('href')
         # save value for your item here like:
-        # detail_item['title'] = soup.find('h1').text
-        file_item['file_url'] = ''  # file_url
-        file_item['file_name'] = ''  # file_name
-        file_item['file_type'] = get_file_type(file_item['file_url'], file_item['file_name'])
+        # file_item['file_url'] = response.urljoin(file_url)
+        file_item['px'] = 1
+        file_item['file_url'] = response.urljoin(file_url)
+        file_item['file_name'] = ""
+        file_item['file_type'] = get_file_type(file_url, 'jpg')
         # default column
         file_item['fkey'] = response.meta.get('fkey')
         file_item['pagenum'] = response.meta.get('pagenum')
@@ -379,7 +335,6 @@ def spider_info(spidername):
     info = {}
     info['spider_path'] = f'{os.getcwd()}\SP\spiders\{spidername}.py'
     info['item_path'] = f'{os.getcwd()}\SP\items\{spidername}_items.py'
-    info['pipeline_path'] = f'{os.getcwd()}\SP\pipelines\{spidername}_pipelines.py'
     info['job_path'] = f'{os.getcwd()}\SP_JOBS\{spidername}_job.py'
     info['job_patch'] = f'{os.getcwd()}\SP_JOBS\{spidername}_job_patch.py'
     return info
@@ -412,7 +367,6 @@ def new(**kwargs):
     describe = kwargs.get('describe')
     author = kwargs.get('author')
     item = kwargs.get('item')
-    pipeline = kwargs.get('pipeline')
     spider = kwargs.get('spider')
     job = kwargs.get('job')
     pycharm = kwargs.get('pycharm')
@@ -439,14 +393,12 @@ def new(**kwargs):
 
     for key, val in replace_map.items():
         item = item.replace(key, val)
-        pipeline = pipeline.replace(key, val)
         spider = spider.replace(key, val)
         job = job.replace(key, val)
 
     path_map = {
         info['spider_path']: spider,
         info['item_path']: item,
-        info['pipeline_path']: pipeline,
         info['job_path']: job
     }
 
@@ -523,7 +475,6 @@ if __name__ == "__main__":
         describe=describe,
         author=author,
         item=item,
-        pipeline=pipeline,
         spider=spider,
         job=job,
         pycharm=pycharm,

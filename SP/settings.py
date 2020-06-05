@@ -57,6 +57,24 @@ ES_SERVERS = ['127.0.0.1:9200', ]
 # kafka
 KAFKA_SERVERS = ['172.16.122.17:9092', ]
 
+# hdfs
+HDFS_URLS = 'http://172.16.122.21:50070;http://172.16.122.24:50070'
+HDFS_FOLDER = '/user/hive/warehouse/spider.db'
+HDFS_DELIMITER = '\001'  # 列分隔符,默认 hive默认分隔符
+HDFS_ENCODING = 'utf-8'  # 文件编码，默认 'utf-8'
+
+# hive
+HIVE_HOST = '172.16.122.20'
+HIVE_PORT = 10000
+HIVE_DBNAME = 'spider'  # hive 数据库名称
+HIVE_AUTO_CREATE = False  # hive 是否自动建表，默认 False
+
+# datafile
+DATAFILE_TYPE = 'csv'  # 文件类型, 默认 csv
+DATAFILE_DELIMITER = ','  # 文件列分隔符，默认 ','
+DATAFILE_ENCODING = 'utf-8-sig'  # 文件编码，默认 'utf-8-sig'
+DATAFILE_HEADER = True  # 是否写入表头列名, 默认 True
+
 # 采集模式
 CRAWL_MODEL = 'standalone'  # standalone 单机 (默认) ; cluster分布式, 需要配置下方的 slaves
 
@@ -74,8 +92,8 @@ SLAVES_ENV = '/home/spider/workspace/spiderman/venv'  # slave 虚拟环境路径
 SLAVES_WORKSPACE = '/home/spider/workspace/spiderman'  # slave 爬虫代码工程路径 like /home/spider/workspace/spiderman/SP
 
 # scrapy_redis
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
+SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
 SCHEDULER_PERSIST = False
 
 MYEXT_ENABLED = True  # 开启扩展

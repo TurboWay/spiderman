@@ -20,7 +20,7 @@ class FilePipeline(FilesPipeline):
         if item.get('file_url'):
             meta = {
                 'spider': info.spider.name,
-                'file_name': re.sub('[:*?"<>|]','', item['file_name']),
+                'file_name': re.sub('[:*?"<>|]', '', item['file_name']),
                 'file_type': item['file_type']
             }
             yield Request(item['file_url'], meta=meta)
@@ -36,9 +36,10 @@ class FilePipeline(FilesPipeline):
         for ok, value in results:
             if ok:
                 item['isload'] = '下载成功'
-                item['file_path'] = value['path']
+                item['file_path'] = self.store.basedir + '/' + value['path']
             else:
                 item['isload'] = '下载失败'
+                item['file_path'] = ''
                 logger.error(
                     '%(class)s found errors processing %(item)s',
                     {'class': self.__class__.__name__, 'item': item},

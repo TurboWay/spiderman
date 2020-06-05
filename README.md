@@ -32,6 +32,7 @@
     
 * [其它](#注意事项)
     * [注意事项](#注意事项)
+    * [hive环境问题](#hive环境问题)
 
 
 ### demo采集效果
@@ -59,8 +60,8 @@
 - 自动存储元数据，分析统计和补爬都很方便
 - 适合多站点开发，每个爬虫独立定制，互不影响
 - 调用方便，可以根据传参自定义采集的页数以及启用的爬虫数量
-- 扩展简易，可以根据需要选择采集模式，单机standalone(默认) 或者 分布式cluster
-- 采集数据落地方便，支持多种数据库，只需在spider中启用相关的管道
+- 扩展简易，可以根据需要选择采集模式，单机 standalone (默认) 或者 分布式cluster
+- 采集数据落地方便，支持多种数据库，只需在 spider 中启用相关的管道
 
     关系型
     - [x] mysql
@@ -73,6 +74,9 @@
     - [x] hbase    
     - [x] mongodb
     - [x] elasticsearch
+    - [x] hdfs
+    - [x] hive 
+    - [x] datafile, 比如 csv
     
 - 反爬处理简易，已封装各种反爬中间件
     - [x] 随机UserAgent
@@ -99,6 +103,24 @@ class ScheduledRequest:
         self.body = kwargs.get('body')  # body, method为post时, 作为 post表单
         self.meta = kwargs.get('meta')  # meta, 携带反爬信息比如cookies，headers; 以及一些元数据，比如 pagenum
 ```
+3. item 类定义表名、字段名、排序号(自定义字段顺序)、注释说明(便于管理元数据)、字段类型(仅关系型数据库管道有效) 
+```python
+class zhifang_list_Item(scrapy.Item):  # 列表页
+    #  define the tablename
+    name = 'zhifang_list'
+    # define the fields for your item here like:
+    # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
+    # name = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    tit = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
+    txt = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
+    tit2 = scrapy.Field({'idx': 3, 'comment': '房屋楼层'})
+    price = scrapy.Field({'idx': 4, 'comment': '房屋价格'})
+    agent = scrapy.Field({'idx': 5, 'comment': '房屋中介'})
+    # default column
+    detail_full_url = scrapy.Field({'idx': 100, 'comment': '详情链接'})  # 通用字段
+    pkey = scrapy.Field({'idx': 101, 'comment': 'md5(detail_full_url)'})  # 通用字段
+    pagenum = scrapy.Field({'idx': 102, 'comment': '页码'})  # 通用字段
+```
 
 
 ### 下载安装
@@ -119,8 +141,8 @@ class ScheduledRequest:
 | ------------ | ------------ | ------------ |
 | job       | SP_JOBS/spidername_job.py             | 编写初始请求 |
 | spider    | SP/spiders/spidername.py              | 编写解析规则，产生新的请求  |
-| items     | SP/items/spidername_items.py          | 定义字段  |
-| pipelines | SP/pipelines/spidername_pipelines.py  | 定义表映射、字段类型  |
+| items     | SP/items/spidername_items.py          | 定义表名字段  |
+~~| pipelines | SP/pipelines/spidername_pipelines.py  | 定义表映射、字段类型  |~~
 
 直接执行 python SP_JOBS/spidername_job.py
 
@@ -175,8 +197,9 @@ META_ENGION = 'sqlite:///meta.db'
 | ------------ | ------------ | ------------ |
 | spider        | varchar(50) | 爬虫名 |
 | spider_comment| varchar(100) | 爬虫描述 |
-| table         | varchar(50) | 表名 |
-| table_comment | varchar(100) | 表描述 |
+| tb             | varchar(50) | 表名 |
+| tb_comment     | varchar(100) | 表描述 |
+| col_px        | int | 字段序号 |
 | col           | varchar(50) | 字段名 |
 | col_comment   | varchar(100) | 字段描述 |
 | author        | varchar(20) | 开发人员 |
@@ -191,9 +214,17 @@ META_ENGION = 'sqlite:///meta.db'
 3. 在 spider 中启用 kafka 管道（运行爬虫 job , 开始采集）
 
 
-
 ### 注意事项
 1. 字段名称不能使用 isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
 2. items 文件每个字段建议添加注释，生成元数据时，会将注释导入到元数据表，便于管理爬虫
 
 
+### hive环境问题
+在 windows 环境下，使用 python3 连接 hive 会有很多坑，所以使用 hdfs 管道时，hive 自动建表功能默认关闭，便于部署。
+假如需要启用 hive 自动建表功能，请进行如下操作：
+
+1. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+2. pip install --no-deps thrift-sasl==0.2.1
+3. 验证环境，执行 SP.utils.ctrl_hive 
+
+如果执行成功，说明 hive 环境准备完毕，可以直接启用 hive 自动建表功能；如果遇到问题，可以参考 [【大数据】windows 下python3连接hive](https://www.cnblogs.com/TurboWay/p/12975034.html)

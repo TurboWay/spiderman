@@ -11,7 +11,7 @@ import os
 import re
 import pandas as pd
 from sqlalchemy import create_engine
-from sqlalchemy.types import VARCHAR
+from sqlalchemy.types import VARCHAR, INT
 from SP.utils.tool import collase
 from SP.settings import META_ENGION
 
@@ -20,8 +20,9 @@ META_TABLE = 'meta'
 META_COL_MAP = {
     'spider': VARCHAR(length=50),
     'spider_comment': VARCHAR(length=100),
-    'table': VARCHAR(length=50),
-    'table_comment': VARCHAR(length=100),
+    'tb': VARCHAR(length=50),
+    'tb_comment': VARCHAR(length=100),
+    'col_px': INT,
     'col': VARCHAR(length=50),
     'col_comment': VARCHAR(length=100),
     'author': VARCHAR(length=20),
@@ -64,15 +65,18 @@ def refresh_meta(spidername):
                     table_name = name
                     table_comment = line.split('#')[-1].strip() if '#' in line else ''
                     meta[table_name] = [table_comment]
-                elif table_name and '=' in line:
+                elif table_name and 'scrapy.Field' in line:
                     col_name = line.split('=')[0].strip()
-                    col_comment = line.split('#')[-1].replace('通用字段：', '').strip() if '#' in line else ''
-                    item = (col_name, col_comment)
+                    col_comment = re.findall("'comment': '(.*?)'", line)[0] if re.findall("'comment': '(.*?)'",
+                                                                                          line) else ''
+                    col_px = re.findall("'idx': (\d+)", line)[0] if re.findall("'idx': (\d+)", line) else 1
+                    item = (col_name, col_comment, col_px)
                     meta[table_name].append(item)
     # 数据处理
     values = []
     for table_name, cols in meta.items():
         table_comment = cols.pop(0)
+        cols.sort(key=lambda x: int(x[-1]))
         default_cols = [
             ('bizdate', '采集日期'),
             ('ctime', '采集时间'),
@@ -81,25 +85,26 @@ def refresh_meta(spidername):
         file_cols = [
             ('file_url', '附件链接'),
             ('file_type', '附件类型'),
+            ('px', '文件序号'),
             ('file_name', '附件名称'),
             ('isload', '是否下载成功'),
-            ('file_url', '附件链接'),
             ('file_path', '附件本地存储路径'),
             ('fkey', '外键'),
             ('pagenum', '页码'),
         ]
         # 补充非业务字段
         if table_name.endswith('_file'):
-            cols = file_cols + cols + default_cols
+            cols = [('keyid', '唯一标识'), ] + file_cols + cols + default_cols
         else:
-            cols = cols + default_cols
+            cols = [('keyid', '唯一标识'), ] + cols + default_cols
         # 遍历
-        for col_item in cols:
+        for col_px, col_item in enumerate(cols, 1):
             value = {
                 'spider': spidername,
                 'spider_comment': describe,
-                'table': table_name,
-                'table_comment': table_comment,
+                'tb': table_name,
+                'tb_comment': table_comment,
+                'col_px': col_px,
                 'col': col_item[0],
                 'col_comment': col_item[1],
                 'author': author,

@@ -8,7 +8,6 @@
 import time
 import logging
 from elasticsearch import Elasticsearch, helpers
-from SP.settings import BUCKETSIZE, ES_SERVERS
 from SP.utils.make_key import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
@@ -16,11 +15,17 @@ logger = logging.getLogger(__name__)
 
 class ElasticSearchPipeline(object):
 
-    def __init__(self, item_table_map):
-        self.item_table_map = item_table_map  # {} key为 Item类型， value为tablename
+    def __init__(self, **kwargs):
+        self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default)}
         self.bizdate = bizdate  # 业务日期为启动爬虫的日期
         self.buckets_map = {}  # 桶 {table：items}
-        self.ES = Elasticsearch(ES_SERVERS)
+        self.bucketsize = kwargs.get('BUCKETSIZE')
+        self.ES = Elasticsearch(kwargs.get('ES_SERVERS'))
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        return cls(**settings)
 
     def process_item(self, item, spider):
         """
@@ -28,14 +33,17 @@ class ElasticSearchPipeline(object):
         :param spider:
         :return: 数据分表入库
         """
-        for Item, tbname in self.item_table_map.items():  # 判断item属于哪个表，放入对应表的桶里面
-            if isinstance(item, Item):
-                items = self.buckets_map.get(tbname)
-                if items:
-                    items.append(item)
-                else:
-                    self.buckets_map[tbname] = [item]
-        self.buckets2db(bucketsize=BUCKETSIZE, spider_name=spider.name)  # 将满足条件的桶 入库
+        if item.name in self.buckets_map:
+            self.buckets_map[item.name].append(item)
+        else:
+            cols, col_default = [], {}
+            for field, value in item.fields.items():
+                cols.append(field)
+                col_default[field] = item.fields[field].get('default', '')
+            cols.sort(key=lambda x: item.fields[x].get('idx', 1))
+            self.table_cols_map.setdefault(item.name, (cols, col_default))  # 定义表结构、字段顺序、默认值
+            self.buckets_map.setdefault(item.name, [item])
+        self.buckets2db(bucketsize=self.bucketsize, spider_name=spider.name)  # 将满足条件的桶 入库
         return item
 
     def close_spider(self, spider):
@@ -54,10 +62,11 @@ class ElasticSearchPipeline(object):
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
                 actions = []
+                cols, col_default = self.table_cols_map.get(tablename)
                 for item in items:
                     new_item = {}
-                    for key, value in item.items():
-                        new_item[key] = value
+                    for field in cols:
+                        new_item[field] = item.get(field, col_default.get(field))
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = spider_name

@@ -25,11 +25,13 @@ class zhifang_Spider(SPRedisSpider):
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
-            # 'SP.pipelines.zhifang_pipelines.RdbmPipeline': 200,  # 关系型数据库
-            # 'SP.pipelines.zhifang_pipelines.HbasePipeline': 201  # Hbase
-            # 'SP.pipelines.zhifang_pipelines.MongodbPipeline': 202,  # Mongodb
-            # 'SP.pipelines.zhifang_pipelines.KafkaPipeline': 203  # Kafka
-            'SP.pipelines.zhifang_pipelines.ElasticSearchPipeline': 204  # ElasticSearch
+            # 'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
+            'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.pipelines_hbase.HbasePipeline': 201,  # Hbase
+            # 'SP.pipelines.pipelines_mongodb.MongodbPipeline': 202,  # Mongodb
+            # 'SP.pipelines.pipelines_kafka.KafkaPipeline': 203,  # Kafka
+            # 'SP.pipelines.pipelines_elasticsearch.ElasticSearchPipeline': 204,  # ElasticSearch
+            # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,
@@ -116,7 +118,8 @@ class zhifang_Spider(SPRedisSpider):
             file_url = img.find('a').get('href')
             file_item = zhifang_file_Item()
             # save value for your item here like:
-            # detail_item['title'] = soup.find('h1').text
+            # file_item['file_url'] = response.urljoin(file_url)
+            file_item['px'] = px
             file_item['file_url'] = response.urljoin(file_url)
             file_item['file_name'] = f"{detail_item['plot_name']}/{px}"
             file_item['file_type'] = get_file_type(file_url, 'jpg')
