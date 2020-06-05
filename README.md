@@ -110,7 +110,7 @@ class zhifang_list_Item(scrapy.Item):  # 列表页
     name = 'zhifang_list'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # name = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
     tit = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
     txt = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
     tit2 = scrapy.Field({'idx': 3, 'comment': '房屋楼层'})
@@ -214,7 +214,7 @@ META_ENGION = 'sqlite:///meta.db'
 
 
 ### 注意事项
-1. 字段名称不能使用 isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
+1. 字段名称不能使用 name、isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
 2. items 文件每个字段建议添加注释，生成元数据时，会将注释导入到元数据表，便于管理爬虫
 
 
