@@ -79,13 +79,13 @@
     - [x] datafile, 比如 csv
     
 - 反爬处理简易，已封装各种反爬中间件
-    - [x] 随机UserAgent
-    - [x] 定制请求头Headers
-    - [x] 定制Cookies
-    - [x] 定制代理ip
-    - [x] 在scrapy中使用requests
-    - [x] Payload请求
-    - [x] 使用Splash渲染 js
+    - [x] 随机 UserAgent
+    - [x] 定制请求头 Headers
+    - [x] 定制 Cookies
+    - [x] 定制代理 ip
+    - [x] 在 scrapy 中使用 requests
+    - [x] Payload 请求
+    - [x] 使用 Splash 渲染 js
 
 
 ### 原理说明
@@ -142,7 +142,6 @@ class zhifang_list_Item(scrapy.Item):  # 列表页
 | job       | SP_JOBS/spidername_job.py             | 编写初始请求 |
 | spider    | SP/spiders/spidername.py              | 编写解析规则，产生新的请求  |
 | items     | SP/items/spidername_items.py          | 定义表名字段  |
-~~| pipelines | SP/pipelines/spidername_pipelines.py  | 定义表映射、字段类型  |~~
 
 直接执行 python SP_JOBS/spidername_job.py
 
