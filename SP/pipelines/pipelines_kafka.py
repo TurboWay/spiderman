@@ -34,8 +34,8 @@ class KafkaPipeline(object):
         new_item = {key: value for key, value in item.items()}
         new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         try:
-            self.kafkaproducer.send(topic=spider.name, key=item.name, value=new_item).get(timeout=10)
-            logger.info(f"入库成功 <= 主题:{spider.name} key名:{item.name}")
+            self.kafkaproducer.send(topic=spider.name, key=item.tablename, value=new_item).get(timeout=10)
+            logger.info(f"入库成功 <= 主题:{spider.name} key名:{item.tablename}")
         except Exception as e:
-            logger.error(f"入库失败 <= 主题:{spider.name} key名:{item.name} 错误原因:{e}")
+            logger.error(f"入库失败 <= 主题:{spider.name} key名:{item.tablename} 错误原因:{e}")
         return item

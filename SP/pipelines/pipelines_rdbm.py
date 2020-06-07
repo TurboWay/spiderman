@@ -35,8 +35,8 @@ class RdbmPipeline(object):
         :param spider:
         :return: 数据分表入库
         """
-        if item.name in self.buckets_map:
-            self.buckets_map[item.name].append(item)
+        if item.tablename in self.buckets_map:
+            self.buckets_map[item.tablename].append(item)
         else:
             cols, col_default = [], {}
             col_type = {
@@ -51,8 +51,8 @@ class RdbmPipeline(object):
                 col_type[field] = item.fields[field].get('type', VARCHAR(length=255))
                 col_default[field] = item.fields[field].get('default', '')
             cols.sort(key=lambda x: item.fields[x].get('idx', 1))
-            self.table_cols_map.setdefault(item.name, (cols, col_default, col_type))  # 定义表结构、字段顺序、默认值
-            self.buckets_map.setdefault(item.name, [item])
+            self.table_cols_map.setdefault(item.tablename, (cols, col_default, col_type))  # 定义表结构、字段顺序、默认值
+            self.buckets_map.setdefault(item.tablename, [item])
         self.buckets2db(bucketsize=self.bucketsize, spider_name=spider.name)  # 将满足条件的桶 入库
         return item
 

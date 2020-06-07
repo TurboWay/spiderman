@@ -19,7 +19,7 @@ from sqlalchemy.types import VARCHAR
 
 class ${spidername}_list_Item(scrapy.Item):  # 列表页
     #  define the tablename
-    name = '${spidername}_list'
+    tablename = '${spidername}_list'
     
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
@@ -34,7 +34,7 @@ class ${spidername}_list_Item(scrapy.Item):  # 列表页
 
 class ${spidername}_detail_Item(scrapy.Item):  # 详情页
     #  define the tablename
-    name = 'zhifang_detail'
+    tablename = 'zhifang_detail'
     
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
@@ -48,7 +48,7 @@ class ${spidername}_detail_Item(scrapy.Item):  # 详情页
 
 class ${spidername}_file_Item(SPfileItem):  # 附件表
     #  define the tablename
-    name = '${spidername}_file'
+    tablename = '${spidername}_file'
     
     pass
 """
