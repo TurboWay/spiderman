@@ -94,7 +94,7 @@ class HbasePipeline(object):
                     keyid = rowkey()
                     values = {}
                     for field in cols:
-                        value = item.fields[field].get('default', '')
+                        value = item.get(field, col_default.get(field))
                         values['cf:' + field] = str(value)
                     values['cf:bizdate'] = self.bizdate  # 增加非业务字段
                     values['cf:ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
