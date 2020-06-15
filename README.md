@@ -36,21 +36,21 @@
 
 
 ### demo采集效果
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605161004020-1111507151.jpg)
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605161016541-1386942172.jpg)
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605161021528-510989556.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/file.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
 
 ### 爬虫元数据
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605160806042-514260216.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/meta.jpg)
 
 ### cluster模式
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605160850502-1438396311.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/cluster.jpg)
 
 ### standalone模式
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605160914214-973953821.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
 
 ### kafka实时采集监控
-![image](https://img2020.cnblogs.com/blog/1000786/202006/1000786-20200605160940893-576703321.jpg)
+![image](https://github.com/TurboWay/spiderman/blob/master/example/mon.jpg)
 
 
 ### 功能
