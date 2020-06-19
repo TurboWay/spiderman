@@ -27,7 +27,7 @@ def clean(value):
     return clean_value
 
 
-def collase(lts):
+def coalesce(lts):
     """
     返回第一个非空值，可以配合正则使用
     :param lts: str 或者 list类型
