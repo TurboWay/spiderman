@@ -12,7 +12,7 @@ import re
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.types import VARCHAR, INT
-from SP.utils.tool import collase
+from SP.utils.tool import coalesce
 from SP.settings import META_ENGION
 
 ENGINE = create_engine(META_ENGION)
@@ -46,11 +46,11 @@ def refresh_meta(spidername):
         lines = f.readlines()[:10]
         for line in lines:
             if not describe:
-                describe = collase(re.findall('@Describe.*?:(.*)', line)).strip()
+                describe = coalesce(re.findall('@Describe.*?:(.*)', line)).strip()
             if not author:
-                author = collase(re.findall('@Author.*?:(.*)', line)).strip()
+                author = coalesce(re.findall('@Author.*?:(.*)', line)).strip()
             if not addtime:
-                addtime = collase(re.findall('@Time.*?:(.*)', line)).strip()
+                addtime = coalesce(re.findall('@Time.*?:(.*)', line)).strip()
 
     # 获取表字段信息
     meta = {}
@@ -60,7 +60,7 @@ def refresh_meta(spidername):
         for line in lines:
             line = line.strip()
             if len(line) > 0 and not line.startswith('#'):
-                name = collase(re.findall('class (.*)_Item', line)).strip()
+                name = coalesce(re.findall('class (.*)_Item', line)).strip()
                 if name:
                     table_name = name
                     table_comment = line.split('#')[-1].strip() if '#' in line else ''
