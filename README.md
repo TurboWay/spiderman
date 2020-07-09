@@ -143,7 +143,7 @@ class zhifang_list_Item(scrapy.Item):  # 列表页
 | spider    | SP/spiders/spidername.py              | 编写解析规则，产生新的请求  |
 | items     | SP/items/spidername_items.py          | 定义表名字段  |
 
-直接执行 python SP_JOBS/spidername_job.py
+以上代码文件编写完成后，直接执行 python SP_JOBS/spidername_job.py
 
 或者动态传参（参数说明 -p 采集页数， -n 启用爬虫数量） python SP_JOBS/spidername_job.py -p 10 -n 1
 
@@ -156,7 +156,7 @@ class zhifang_list_Item(scrapy.Item):  # 列表页
 | ------------ | ------------ | ------------ |
 | job | SP_JOBS/spidername_job_patch.py  | 编写补爬请求 |
 
-直接执行 python SP_JOBS/spidername_job_patch.py
+以上代码文件编写完成后，直接执行 python SP_JOBS/spidername_job_patch.py
 
 
 
