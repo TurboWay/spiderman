@@ -107,7 +107,7 @@ def get_file_type(*args):
         if file_type.strip().lower() in file_types:
             return file_type
         # data url类型处理
-        file_type = collase(re.findall("data:image/(.*);", lt))
+        file_type = coalesce(re.findall("data:image/(.*);", lt))
         if file_type.strip().lower() in file_types:
             return file_type
     return ''
