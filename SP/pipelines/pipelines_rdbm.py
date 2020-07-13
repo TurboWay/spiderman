@@ -22,7 +22,7 @@ class RdbmPipeline(object):
         self.bizdate = bizdate  # 业务日期为启动爬虫的日期
         self.buckets_map = {}  # 桶 {table：items}
         self.bucketsize = kwargs.get('BUCKETSIZE')
-        self.engine = create_engine(kwargs.get('ENGION_CONFIG'))
+        self.engine = create_engine(kwargs.get('ENGINE_CONFIG'))
 
     @classmethod
     def from_crawler(cls, crawler):

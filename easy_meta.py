@@ -13,9 +13,9 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.types import VARCHAR, INT
 from SP.utils.tool import coalesce
-from SP.settings import META_ENGION
+from SP.settings import META_ENGINE
 
-ENGINE = create_engine(META_ENGION)
+ENGINE = create_engine(META_ENGINE)
 META_TABLE = 'meta'
 META_COL_MAP = {
     'spider': VARCHAR(length=50),

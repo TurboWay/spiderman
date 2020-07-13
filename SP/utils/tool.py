@@ -11,7 +11,7 @@ import base64
 from hashlib import md5
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from SP.settings import ENGION_CONFIG
+from SP.settings import ENGINE_CONFIG
 
 
 def clean(value):
@@ -140,7 +140,7 @@ def rdbm_execute(sql):
     :param sql:
     :return:
     """
-    engine = create_engine(ENGION_CONFIG)
+    engine = create_engine(ENGINE_CONFIG)
     Session = sessionmaker(bind=engine)
     session = Session()
     rows = session.execute(sql).fetchall()

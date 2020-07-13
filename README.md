@@ -187,7 +187,7 @@ CRAWL_MODEL = 'cluster'
 
 ```python
 # 爬虫 meta
-META_ENGION = 'sqlite:///meta.db'
+META_ENGINE = 'sqlite:///meta.db'
 ```
 
 元数据表meta字典如下：

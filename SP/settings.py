@@ -31,10 +31,10 @@ SPLASH_URL = 'http://127.0.0.1:8050'
 BUCKETSIZE = 100
 
 # 爬虫 meta
-META_ENGION = 'sqlite:///meta.db'
+META_ENGINE = 'sqlite:///meta.db'
 
 # rdbms
-ENGION_CONFIG = [
+ENGINE_CONFIG = [
     # 'mysql://user:pwd@127.0.0.1:3306/spider_db?charset=utf8',  # mysql
     # 'postgresql://user:pwd@127.0.0.1:5432/spider_db',  # postgresql
     # 'oracle://user:pwd@127.0.0.1:1521/spider_db',  # oracle
