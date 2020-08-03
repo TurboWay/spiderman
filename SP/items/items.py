@@ -22,6 +22,6 @@ class SPfileItem(scrapy.Item):
     px = scrapy.Field({'idx': 3, 'comment': '文件序号'})
     file_name = scrapy.Field({'idx': 4, 'comment': '附件名称'})
     status = scrapy.Field({'idx': 5, 'comment': '下载状态', 'default': '未下载'})
-    file_path = scrapy.Field({'idx': 6, 'comment': '附件链接'})  # 通用字段：附件本地存储路径
-    fkey = scrapy.Field({'idx': 7, 'comment': '附件链接'})  # 通用字段：外键
-    pagenum = scrapy.Field({'idx': 8, 'comment': '附件链接'})  # 通用字段：页码
+    file_path = scrapy.Field({'idx': 6, 'comment': '文件存储路径'})
+    fkey = scrapy.Field({'idx': 7, 'comment': '外键'})
+    pagenum = scrapy.Field({'idx': 8, 'comment': '页码'})
