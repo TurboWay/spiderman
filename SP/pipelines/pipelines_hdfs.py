@@ -16,10 +16,17 @@ logger = logging.getLogger(__name__)
 
 class HdfsPipeline(object):
 
-    def __init__(self, **kwargs):
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        name = crawler.spider.name
+        return cls(name, **settings)
+
+    def __init__(self, name, **kwargs):
         self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default)}
         self.bizdate = bizdate  # 业务日期为启动爬虫的日期
         self.buckets_map = {}  # 桶 {table：items}
+        self.name = name
         self.bucketsize = kwargs.get('BUCKETSIZE')
         self.client = Client(kwargs.get('HDFS_URLS'))
         self.dir = kwargs.get('HDFS_FOLDER')  # 文件夹路径
@@ -30,11 +37,6 @@ class HdfsPipeline(object):
         self.hive_dbname = kwargs.get('HIVE_DBNAME')  # 数据库名称
         self.hive_auto_create = kwargs.get('HIVE_AUTO_CREATE', False)  # hive 是否自动建表，默认 False
         self.client.makedirs(self.dir)
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        settings = crawler.settings
-        return cls(**settings)
 
     def process_item(self, item, spider):
         """
@@ -54,7 +56,7 @@ class HdfsPipeline(object):
             self.buckets_map.setdefault(item.tablename, [item])
             if self.hive_auto_create:
                 self.checktable(item.tablename, cols)  # 建表
-        self.buckets2db(bucketsize=self.bucketsize, spider_name=spider.name)  # 将满足条件的桶 入库
+        self.buckets2db()  # 将满足条件的桶 入库
         return item
 
     def close_spider(self, spider):
@@ -62,7 +64,7 @@ class HdfsPipeline(object):
         :param spider:
         :return:  爬虫结束时，将桶里面剩下的数据 入库
         """
-        self.buckets2db(bucketsize=1, spider_name=spider.name)
+        self.buckets2db(1)
 
     def checktable(self, tbname, cols):
         """
@@ -74,12 +76,13 @@ class HdfsPipeline(object):
         hive.execute(create_sql)
         logger.info(f"表创建成功 <= 表名:{tbname}")
 
-    def buckets2db(self, bucketsize=100, spider_name=''):
+    def buckets2db(self, bucketsize=None):
         """
         :param bucketsize:  桶大小
-        :param spider_name:  爬虫名字
         :return: 遍历每个桶，将满足条件的桶，入库并清空桶
         """
+        if bucketsize is None:
+            bucketsize = self.bucketsize
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
                 new_items = []
@@ -92,7 +95,7 @@ class HdfsPipeline(object):
                         new_item[field] = str(value).replace(self.delimiter, '').replace('\n', '')
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                    new_item['spider'] = spider_name
+                    new_item['spider'] = self.name
                     value = self.delimiter.join(new_item.values())
                     new_items.append(value)
 

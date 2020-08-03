@@ -33,6 +33,7 @@
 * [其它](#注意事项)
     * [注意事项](#注意事项)
     * [hive环境问题](#hive环境问题)
+    * [更新日志](#更新日志)
 
 
 ### demo采集效果
@@ -105,9 +106,10 @@ class ScheduledRequest:
 ```
 3. item 类定义表名、字段名、排序号(自定义字段顺序)、注释说明(便于管理元数据)、字段类型(仅关系型数据库管道有效) 
 ```python
-class zhifang_list_Item(scrapy.Item):  # 列表页
-    #  define the tablename
+class zhifang_list_Item(scrapy.Item):
+    #  define table
     tablename = 'zhifang_list'
+    tabledesc = '列表'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
     # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
@@ -227,3 +229,10 @@ META_ENGINE = 'sqlite:///meta.db'
 3. 验证环境，执行 SP.utils.ctrl_hive 
 
 如果执行成功，说明 hive 环境准备完毕，可以直接启用 hive 自动建表功能；如果遇到问题，可以参考 [【大数据】windows 下python3连接hive](https://www.cnblogs.com/TurboWay/p/12975034.html)
+
+
+### 更新日志
+
+| 日期 | 更新内容 | 
+| ------------ | ------------ |
+| 20200803        | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status) |

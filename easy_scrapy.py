@@ -17,10 +17,10 @@ from SP.items.items import *
 from sqlalchemy.types import VARCHAR
 
 
-class ${spidername}_list_Item(scrapy.Item):  # 列表页
-    #  define the tablename
+class ${spidername}_list_Item(scrapy.Item):
+    #  define table
     tablename = '${spidername}_list'
-    
+    tabledesc = '列表'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
     # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
@@ -32,10 +32,10 @@ class ${spidername}_list_Item(scrapy.Item):  # 列表页
     pagenum = scrapy.Field({'idx': 102, 'comment': '页码'})  # 通用字段
 
 
-class ${spidername}_detail_Item(scrapy.Item):  # 详情页
-    #  define the tablename
+class ${spidername}_detail_Item(scrapy.Item):
+    #  define table
     tablename = 'zhifang_detail'
-    
+    tabledesc = '详情'    
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
     # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
@@ -46,11 +46,10 @@ class ${spidername}_detail_Item(scrapy.Item):  # 详情页
     pagenum = scrapy.Field({'idx': 101, 'comment': '页码'})  # 通用字段
 
 
-class ${spidername}_file_Item(SPfileItem):  # 附件表
-    #  define the tablename
+class ${spidername}_file_Item(SPfileItem):
+    #  define table
     tablename = '${spidername}_file'
-    
-    pass
+    tabledesc = '附件'
 """
 
 

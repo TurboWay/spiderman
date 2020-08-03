@@ -17,17 +17,19 @@ logger = logging.getLogger(__name__)
 
 class RdbmPipeline(object):
 
-    def __init__(self, **kwargs):
-        self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default, col_type)}
-        self.bizdate = bizdate  # 业务日期为启动爬虫的日期
-        self.buckets_map = {}  # 桶 {table：items}
-        self.bucketsize = kwargs.get('BUCKETSIZE')
-        self.engine = create_engine(kwargs.get('ENGINE_CONFIG'))
-
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
-        return cls(**settings)
+        name = crawler.spider.name
+        return cls(name, **settings)
+
+    def __init__(self, name, **kwargs):
+        self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default, col_type)}
+        self.bizdate = bizdate  # 业务日期为启动爬虫的日期
+        self.buckets_map = {}  # 桶 {table：items}
+        self.name = name
+        self.bucketsize = kwargs.get('BUCKETSIZE')
+        self.engine = create_engine(kwargs.get('ENGINE_CONFIG'))
 
     def process_item(self, item, spider):
         """
@@ -53,7 +55,7 @@ class RdbmPipeline(object):
             cols.sort(key=lambda x: item.fields[x].get('idx', 1))
             self.table_cols_map.setdefault(item.tablename, (cols, col_default, col_type))  # 定义表结构、字段顺序、默认值
             self.buckets_map.setdefault(item.tablename, [item])
-        self.buckets2db(bucketsize=self.bucketsize, spider_name=spider.name)  # 将满足条件的桶 入库
+        self.buckets2db()  # 将满足条件的桶 入库
         return item
 
     def close_spider(self, spider):
@@ -61,14 +63,15 @@ class RdbmPipeline(object):
         :param spider:
         :return:  爬虫结束时，将桶里面剩下的数据 入库
         """
-        self.buckets2db(bucketsize=1, spider_name=spider.name)
+        self.buckets2db(1)
 
-    def buckets2db(self, bucketsize=100, spider_name=''):
+    def buckets2db(self, bucketsize=None):
         """
         :param bucketsize:  桶大小
-        :param spider_name:  爬虫名字
         :return: 遍历每个桶，将满足条件的桶，入库并清空桶
         """
+        if bucketsize is None:
+            bucketsize = self.bucketsize
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
                 new_items = []
@@ -81,7 +84,7 @@ class RdbmPipeline(object):
                         new_item[field] = str(value)
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                    new_item['spider'] = spider_name
+                    new_item['spider'] = self.name
                     new_items.append(new_item)
                 try:
                     df = pd.DataFrame(new_items)

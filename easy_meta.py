@@ -5,12 +5,15 @@
 # @Site : all
 # @Describe: 遍历item和spider，记录爬虫元数据表
 
-import time
-import sys
 import os
+import sys
+
+sys.path.append(os.getcwd() + '\SP')
+import time
 import re
 import pandas as pd
-from sqlalchemy import create_engine
+import importlib
+from sqlalchemy import create_engine, types
 from sqlalchemy.types import VARCHAR, INT
 from SP.utils.tool import coalesce
 from SP.settings import META_ENGINE
@@ -53,51 +56,31 @@ def refresh_meta(spidername):
                 addtime = coalesce(re.findall('@Time.*?:(.*)', line)).strip()
 
     # 获取表字段信息
-    meta = {}
-    with open(items_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-        table_name = ''
-        for line in lines:
-            line = line.strip()
-            if len(line) > 0 and not line.startswith('#'):
-                name = coalesce(re.findall('class (.*)_Item', line)).strip()
-                if name:
-                    table_name = name
-                    table_comment = line.split('#')[-1].strip() if '#' in line else ''
-                    meta[table_name] = [table_comment]
-                elif table_name and 'scrapy.Field' in line:
-                    col_name = line.split('=')[0].strip()
-                    col_comment = re.findall("'comment': '(.*?)'", line)[0] if re.findall("'comment': '(.*?)'",
-                                                                                          line) else ''
-                    col_px = re.findall("'idx': (\d+)", line)[0] if re.findall("'idx': (\d+)", line) else 1
-                    item = (col_name, col_comment, col_px)
-                    meta[table_name].append(item)
+    meta = []
+    module_name = f'SP.items.{spidername}_items'
+    module = importlib.import_module(module_name)
+    for item in dir(module):
+        if item in ('SPfileItem', 'SPItem') or item in types.__all__:
+            continue
+        item = getattr(module, item)
+        if isinstance(item, type):
+            cols = [
+                ('keyid', -99, '唯一标识'),
+                ('bizdate', 1001, '业务日期'),
+                ('ctime', 1002, '入库时间'),
+                ('spider', 1003, '爬虫名称')
+            ]
+            for col in item.fields:
+                idx = item.fields[col].get('idx', 0)
+                comment = item.fields[col].get('comment', '')
+                cols.append((col, idx, comment))
+            cols.sort(key=lambda x: x[1])
+            meta.append((item.tablename, item.tabledesc, cols))
+
     # 数据处理
     values = []
-    for table_name, cols in meta.items():
-        table_comment = cols.pop(0)
-        cols.sort(key=lambda x: int(x[-1]))
-        default_cols = [
-            ('bizdate', '采集日期'),
-            ('ctime', '采集时间'),
-            ('spider', '爬虫名称')
-        ]
-        file_cols = [
-            ('file_url', '附件链接'),
-            ('file_type', '附件类型'),
-            ('px', '文件序号'),
-            ('file_name', '附件名称'),
-            ('isload', '是否下载成功'),
-            ('file_path', '附件本地存储路径'),
-            ('fkey', '外键'),
-            ('pagenum', '页码'),
-        ]
-        # 补充非业务字段
-        if table_name.endswith('_file'):
-            cols = [('keyid', '唯一标识'), ] + file_cols + cols + default_cols
-        else:
-            cols = [('keyid', '唯一标识'), ] + cols + default_cols
-        # 遍历
+    for info in meta:
+        table_name, table_comment, cols = info
         for col_px, col_item in enumerate(cols, 1):
             value = {
                 'spider': spidername,
@@ -106,7 +89,7 @@ def refresh_meta(spidername):
                 'tb_comment': table_comment,
                 'col_px': col_px,
                 'col': col_item[0],
-                'col_comment': col_item[1],
+                'col_comment': col_item[-1],
                 'author': author,
                 'addtime': addtime,
                 'insertime': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

@@ -15,15 +15,15 @@ logger = logging.getLogger(__name__)
 
 class KafkaPipeline(object):
 
-    def __init__(self, **kwargs):
-        self.kafkaproducer = KafkaProducer(bootstrap_servers=kwargs.get('KAFKA_SERVERS'),
-                                           key_serializer=lambda m: m.encode('utf-8'),
-                                           value_serializer=lambda m: json.dumps(m).encode('utf-8'))
-
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
         return cls(**settings)
+
+    def __init__(self, **kwargs):
+        self.kafkaproducer = KafkaProducer(bootstrap_servers=kwargs.get('KAFKA_SERVERS'),
+                                           key_serializer=lambda m: m.encode('utf-8'),
+                                           value_serializer=lambda m: json.dumps(m).encode('utf-8'))
 
     def process_item(self, item, spider):
         """

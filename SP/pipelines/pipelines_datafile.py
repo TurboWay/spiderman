@@ -15,21 +15,23 @@ logger = logging.getLogger(__name__)
 
 class DataFilePipeline(object):
 
-    def __init__(self, **kwargs):
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        name = crawler.spider.name
+        return cls(name, **settings)
+
+    def __init__(self, name, **kwargs):
         self.table_cols_map = {}  # 表字段顺序 {table：(cols, col_default)}
         self.bizdate = bizdate  # 业务日期为启动爬虫的日期
         self.buckets_map = {}  # 桶 {table：items}
+        self.name = name
         self.bucketsize = kwargs.get('BUCKETSIZE')
         self.dir = kwargs.get('FILES_STORE')  # 文件夹路径
         self.type = kwargs.get('DATAFILE_TYPE', 'csv')  # 文件类型，默认 csv
         self.delimiter = kwargs.get('DATAFILE_DELIMITER', ',')  # 列分隔符, 默认','
         self.encoding = kwargs.get('DATAFILE_ENCODING', 'utf-8-sig')  # 文件编码，默认 utf-8-sig
-        self.writeheader = kwargs.get('DATAFILE_HEADER', True) # 是否写入表头列名, 默认 True
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        settings = crawler.settings
-        return cls(**settings)
+        self.writeheader = kwargs.get('DATAFILE_HEADER', True)  # 是否写入表头列名, 默认 True
 
     def process_item(self, item, spider):
         """
@@ -47,7 +49,7 @@ class DataFilePipeline(object):
             cols.sort(key=lambda x: item.fields[x].get('idx', 1))
             self.table_cols_map.setdefault(item.tablename, (cols, col_default))  # 定义表结构、字段顺序、默认值
             self.buckets_map.setdefault(item.tablename, [item])
-        self.buckets2db(bucketsize=self.bucketsize, spider_name=spider.name)  # 将满足条件的桶 入库
+        self.buckets2db()  # 将满足条件的桶 入库
         return item
 
     def close_spider(self, spider):
@@ -55,14 +57,15 @@ class DataFilePipeline(object):
         :param spider:
         :return:  爬虫结束时，将桶里面剩下的数据 入库
         """
-        self.buckets2db(bucketsize=1, spider_name=spider.name)
+        self.buckets2db(1)
 
-    def buckets2db(self, bucketsize=100, spider_name=''):
+    def buckets2db(self, bucketsize=None):
         """
         :param bucketsize:  桶大小
-        :param spider_name:  爬虫名字
         :return: 遍历每个桶，将满足条件的桶，入库并清空桶
         """
+        if bucketsize is None:
+            bucketsize = self.bucketsize
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
                 header = ''
@@ -76,14 +79,14 @@ class DataFilePipeline(object):
                         new_item[field] = str(value).replace(self.delimiter, '').replace('\n', '')
                     new_item['bizdate'] = self.bizdate  # 增加非业务字段
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                    new_item['spider'] = spider_name
+                    new_item['spider'] = self.name
                     if not header:
                         header = self.delimiter.join(new_item.keys())
                     value = self.delimiter.join(new_item.values())
                     # value = self.delimiter.join([new_item[key] for key in header.split(self.delimiter)])
                     new_items.append(value)
 
-                fielder = f"{self.dir}/{spider_name}"
+                fielder = f"{self.dir}/{self.name}"
                 os.makedirs(fielder, exist_ok=True)
 
                 filename = f"{fielder}/{tablename}.{self.type}"

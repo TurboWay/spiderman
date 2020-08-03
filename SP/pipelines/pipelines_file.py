@@ -35,10 +35,10 @@ class FilePipeline(FilesPipeline):
     def item_completed(self, results, item, info):
         for ok, value in results:
             if ok:
-                item['isload'] = '下载成功'
+                item['status'] = '下载成功'
                 item['file_path'] = self.store.basedir + '/' + value['path']
             else:
-                item['isload'] = '下载失败'
+                item['status'] = '下载失败'
                 item['file_path'] = ''
                 logger.error(
                     '%(class)s found errors processing %(item)s',
