@@ -34,7 +34,7 @@ class ${spidername}_list_Item(scrapy.Item):
 
 class ${spidername}_detail_Item(scrapy.Item):
     #  define table
-    tablename = 'zhifang_detail'
+    tablename = '${spidername}_detail'
     tabledesc = '详情'    
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
