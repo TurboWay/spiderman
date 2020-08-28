@@ -37,21 +37,21 @@
 
 
 ### demo采集效果
-![image](https://github.com/TurboWay/spiderman/blob/master/example/file.jpg)
-![image](https://github.com/TurboWay/spiderman/blob/master/example/file_meta.jpg)
-![image](https://github.com/TurboWay/spiderman/blob/master/example/list_data.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/file.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/file_meta.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/list_data.jpg)
 
 ### 爬虫元数据
-![image](https://github.com/TurboWay/spiderman/blob/master/example/meta.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/meta.jpg)
 
 ### cluster模式
-![image](https://github.com/TurboWay/spiderman/blob/master/example/cluster.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/cluster.jpg)
 
 ### standalone模式
-![image](https://github.com/TurboWay/spiderman/blob/master/example/standalone.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/standalone.jpg)
 
 ### kafka实时采集监控
-![image](https://github.com/TurboWay/spiderman/blob/master/example/mon.jpg)
+![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/mon.jpg)
 
 
 ### 功能
