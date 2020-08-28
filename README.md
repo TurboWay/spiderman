@@ -128,7 +128,7 @@ class zhifang_list_Item(scrapy.Item):
 ### 下载安装
 
 1. git clone https://github.com/TurboWay/spiderman.git; cd spiderman;
-2. 【不使用虚拟环境的话，可以跳过步骤23】virtualenv -p /usr/bin/python3 --no-site-packages venv
+2. 【不使用虚拟环境的话，可以跳过步骤23】virtualenv -p /usr/bin/python3 venv
 3. 【不使用虚拟环境的话，可以跳过步骤23】source venv/bin/activate
 4. pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 5. 修改配置 vi SP/settings.py
