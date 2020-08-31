@@ -99,6 +99,15 @@ class DataFilePipeline(object):
                     with open(filename, 'a', encoding=self.encoding) as f:
                         f.write('\n'.join(new_items) + '\n')
                     logger.info(f"保存成功 <= 文件名:{filename} 记录数:{len(items)}")
-                    items.clear()  # 清空桶
                 except Exception as e:
                     logger.error(f"保存失败 <= 文件名:{filename} 错误原因:{e}")
+                    logger.warning(f"重新保存 <= 文件名:{tablename} 当前批次保存异常, 自动切换成逐行保存...")
+                    for new_item in new_items:
+                        try:
+                            with open(filename, 'a', encoding=self.encoding) as f:
+                                f.write(new_item + '\n')
+                            logger.info(f"保存成功 <= 文件名:{tablename} 记录数:1")
+                        except Exception as e:
+                            logger.error(f"丢弃 <= 表名:{tablename} 丢弃原因:{e}")
+                finally:
+                    items.clear()  # 清空桶

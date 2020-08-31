@@ -112,7 +112,7 @@ class zhifang_list_Item(scrapy.Item):
     tabledesc = '列表'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
     tit = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
     txt = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
     tit2 = scrapy.Field({'idx': 3, 'comment': '房屋楼层'})
@@ -236,3 +236,4 @@ META_ENGINE = 'sqlite:///meta.db'
 | 日期 | 更新内容 | 
 | ------------ | ------------ |
 | 20200803        | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status) |
+| 20200831        | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录|

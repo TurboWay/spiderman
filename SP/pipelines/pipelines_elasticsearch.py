@@ -79,9 +79,18 @@ class ElasticSearchPipeline(object):
                               '_type': tablename,  # type
                               '_source': new_item}
                     actions.append(action)
+
                 try:
                     helpers.bulk(self.ES, actions=actions)
                     logger.info(f"入库成功 <= 索引：{self.name}, 类型:{tablename} 记录数:{len(items)}")
-                    items.clear()  # 清空桶
                 except Exception as e:
                     logger.error(f"入库失败 <= 索引：{self.name}, 类型:{tablename} 错误原因:{e}")
+                    logger.warning(f"重新入库 <= 表名:{tablename} 当前批次入库异常, 自动切换成逐行入库...")
+                    for action in actions:
+                        try:
+                            helpers.bulk(self.ES, actions=[action])
+                            logger.info(f"入库成功 <= 索引：{self.name}, 类型:{tablename} 记录数:1")
+                        except Exception as e:
+                            logger.error(f"丢弃 <= 索引：{self.name}, 类型:{tablename} 丢弃原因:{e}")
+                finally:
+                    items.clear()  # 清空桶

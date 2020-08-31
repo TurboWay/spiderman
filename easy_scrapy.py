@@ -23,7 +23,7 @@ class ${spidername}_list_Item(scrapy.Item):
     tabledesc = '列表'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
     
     
     # default column
@@ -38,7 +38,7 @@ class ${spidername}_detail_Item(scrapy.Item):
     tabledesc = '详情'    
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
     
     
     # default column

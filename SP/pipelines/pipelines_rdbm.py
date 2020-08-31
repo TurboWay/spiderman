@@ -86,10 +86,20 @@ class RdbmPipeline(object):
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = self.name
                     new_items.append(new_item)
+
                 try:
                     df = pd.DataFrame(new_items)
                     df.to_sql(tablename, con=self.engine, index=False, if_exists='append', dtype=col_type)
                     logger.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
-                    items.clear()  # 清空桶
                 except Exception as e:
                     logger.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
+                    logger.warning(f"重新入库 <= 表名:{tablename} 当前批次入库异常, 自动切换成逐行入库...")
+                    for new_item in new_items:
+                        try:
+                            df = pd.DataFrame([new_item])
+                            df.to_sql(tablename, con=self.engine, index=False, if_exists='append', dtype=col_type)
+                            logger.info(f"入库成功 <= 表名:{tablename} 记录数:1")
+                        except Exception as e:
+                            logger.error(f"丢弃 <= 表名:{tablename} 丢弃原因:{e}")
+                finally:
+                    items.clear()  # 清空桶

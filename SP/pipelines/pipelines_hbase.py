@@ -90,9 +90,7 @@ class HbasePipeline(object):
         for tablename, items in self.buckets_map.items():  # 遍历每个桶，将满足条件的桶，入库并清空桶
             if len(items) >= bucketsize:
                 cols, col_default = self.table_cols_map.get(tablename)
-                connection = self.get_connect()
-                table = connection.table(tablename)
-                bat = table.batch()
+                new_items = []
                 for item in items:
                     keyid = rowkey()
                     values = {}
@@ -102,12 +100,25 @@ class HbasePipeline(object):
                     values['cf:bizdate'] = self.bizdate  # 增加非业务字段
                     values['cf:ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     values['cf:spider'] = self.name
-                    bat.put(keyid, values)  # 将清洗后的桶数据 添加到批次
+                    new_items.append((keyid, values))
+
+                connection = self.get_connect()
+                table = connection.table(tablename)
                 try:
+                    bat = table.batch()
+                    for keyid, values in new_items:
+                        bat.put(keyid, values)  # 将清洗后的桶数据 添加到批次
                     bat.send()  # 批次入库
                     logger.info(f"入库成功 <= 表名:{tablename} 记录数:{len(items)}")
-                    items.clear()  # 清空桶
                 except Exception as e:
                     logger.error(f"入库失败 <= 表名:{tablename} 错误原因:{e}")
+                    logger.warning(f"重新入库 <= 表名:{tablename} 当前批次入库异常, 自动切换成逐行入库...")
+                    for keyid, values in new_items:
+                        try:
+                            table.put(keyid, values)
+                            logger.info(f"入库成功 <= 表名:{tablename} 记录数:1")
+                        except Exception as e:
+                            logger.error(f"丢弃 <= 表名:{tablename} 丢弃原因:{e}")
                 finally:
+                    items.clear()  # 清空桶
                     connection.close()

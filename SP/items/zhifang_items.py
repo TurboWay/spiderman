@@ -13,7 +13,7 @@ class zhifang_list_Item(scrapy.Item):
     tabledesc = '列表'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
     tit = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
     txt = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
     tit2 = scrapy.Field({'idx': 3, 'comment': '房屋楼层'})
@@ -31,7 +31,7 @@ class zhifang_detail_Item(scrapy.Item):
     tabledesc = '详情'
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
-    # colname = scrapy.Field({'idx': 1, 'comment': '名称', type: VARCHAR(255)})
+    # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
     type1 = scrapy.Field({'idx': 1, 'comment': '户型楼层'})
     type2 = scrapy.Field({'idx': 2, 'comment': '朝向类型'})
     type3 = scrapy.Field({'idx': 3, 'comment': '面积结构'})
