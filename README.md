@@ -1,5 +1,5 @@
 # spiderman
-![](https://img.shields.io/badge/python-3.6%2B-brightgreen)
+![](https://img.shields.io/badge/python-3.6-brightgreen)
 ![](https://img.shields.io/badge/Scrapy-1.6%2B-orange)
 ![](https://img.shields.io/badge/scrapy--redis-0.6%2B-yellowgreen)
 ![](https://img.shields.io/badge/SQLAlchemy-1.3%2B-green)
