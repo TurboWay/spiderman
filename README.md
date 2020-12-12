@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/scrapy--redis-0.6%2B-yellowgreen)
 ![](https://img.shields.io/badge/SQLAlchemy-1.3%2B-green)
 
-基于scrapy-redis的通用分布式爬虫框架
+基于 scrapy-redis 的通用分布式爬虫框架
 
 
 
@@ -90,7 +90,7 @@
 
 
 ### 原理说明
-1. 消息队列使用 redis，采集策略使用先进先出
+1. 消息队列使用 redis，采集策略使用广度优先，先进先出
 2. 每个爬虫都有一个 job 文件，使用 job 来生成初始请求类 ScheduledRequest，并将其推送到 redis；
 初始请求全部推到 redis 后，运行 spider 解析生成数据 并迭代新的请求到redis, 直到 redis 中的全部请求被消耗完
 ```python
@@ -122,6 +122,36 @@ class zhifang_list_Item(scrapy.Item):
     detail_full_url = scrapy.Field({'idx': 100, 'comment': '详情链接'})  # 通用字段
     pkey = scrapy.Field({'idx': 101, 'comment': 'md5(detail_full_url)'})  # 通用字段
     pagenum = scrapy.Field({'idx': 102, 'comment': '页码'})  # 通用字段
+```
+
+4. 去重策略，默认不去重，每次采集独立，即每次启动 job 都会清空上一次未完成的 url，并且不保留 redis 中上一次已采集的 url 指纹。 如需调整可以修改以下配置
+
+- settings 配置文件（全局）
+```python
+# scrapy_redis
+DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
+SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
+SCHEDULER_PERSIST = False   # 默认 False，不保留 redis 中上一次已采集的 url 指纹
+```
+
+- job 文件（单个爬虫）
+```python
+class zhifang_job(SPJob):
+
+    def __init__(self):
+        super().__init__(spider_name=zhifang_Spider.name)
+        self.delete()   # 默认清空上一次未完成的 url
+```
+
+- spider 文件（单个爬虫）
+```python
+    def get_callback(self, callback):
+        # url去重设置：True 不去重 False 去重
+        callback_dt = {
+            'list': (self.list_parse, True),   # 默认都不去重
+            'detail': (self.detail_parse, True),
+        }
+        return callback_dt.get(callback)
 ```
 
 
@@ -238,3 +268,4 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20200803        | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status) |
 | 20200831        | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录|
 | 20201104        | 1.requests 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY |
+| 20201212        | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明|

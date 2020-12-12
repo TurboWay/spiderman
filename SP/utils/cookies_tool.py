@@ -33,18 +33,26 @@ def get_sp_cookies(cookies_url, times=2, source=False):
                    False 返回 cookies
     :return: dict
     """
-    import time
-    from selenium import webdriver
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--headless')  # 无头浏览
-    browser = webdriver.Chrome(chrome_options=chrome_options)
-    browser.get(cookies_url)
-    time.sleep(times)
-    cookies = {i.get('name'): i.get('value') for i in browser.get_cookies()}
-    page_source = browser.page_source
-    browser.quit()
+    import requests, json
+    from SP.settings import SPLASH_URL
+
+    lua_script = f'''
+    function main(splash)
+        splash:go("{cookies_url}")
+        splash:wait({times})
+        local html = splash:html()
+        local cookies = splash:get_cookies()
+        return {{html=html, cookies=cookies}}
+    end
+    '''
+    headers = {'content-type': 'application/json'}
+    data = json.dumps({'lua_source': lua_script})
+    response = requests.post(SPLASH_URL + '/execute', headers=headers, data=data).json()
+    cookies = {}
+    for cookie in response['cookies']:
+        cookies.update(cookie)
     if source:
-        return cookies, page_source
+        return cookies, response['html']
     return cookies
 
 
