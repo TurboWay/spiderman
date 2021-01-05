@@ -159,7 +159,7 @@ class zhifang_job(SPJob):
 > 这个配置可以满足 1 亿条请求的去重，按漏失率估计，差不多会有 1 万多条漏采。 [调参与漏失率参考](https://blog.csdn.net/Bone_ACE/article/details/53107018)
 
 ```
-    DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter', # 使用布隆过滤器
+    'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter', # 使用布隆过滤器
 ```
 
 ### 下载安装
