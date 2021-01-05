@@ -187,7 +187,7 @@ class ${spidername}_job(SPJob):
 
     def __init__(self):
         super().__init__(spider_name=${spidername}_Spider.name)
-        self.delete()
+        self.delete()  # 如需去重、增量采集，请注释该行
 
     def make_job(self, pages):
         for pagenum in range(1, pages + 1):
@@ -249,7 +249,7 @@ class ${spidername}_job(SPJob):
 
     def __init__(self):
         super().__init__(spider_name=${spidername}_Spider.name)
-        self.delete()
+        self.delete()  # 如需去重、增量采集，请注释该行
 
     def make_list_job(self, pages):
         sql = \"\"\"

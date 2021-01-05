@@ -124,15 +124,8 @@ class zhifang_list_Item(scrapy.Item):
     pagenum = scrapy.Field({'idx': 102, 'comment': '页码'})  # 通用字段
 ```
 
-4. 去重策略，默认不去重，每次采集独立，即每次启动 job 都会清空上一次未完成的 url，并且不保留 redis 中上一次已采集的 url 指纹。 如需调整可以修改以下配置
-
-- settings 配置文件（全局）
-```python
-# scrapy_redis
-DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
-SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
-SCHEDULER_PERSIST = False   # 默认 False，不保留 redis 中上一次已采集的 url 指纹
-```
+4. 去重策略，默认不去重，每次采集独立，即每次启动 job 都会清空上一次未完成的 url，并且不保留 redis 中上一次已采集的 url 指纹。 
+   如需调整可以修改以下配置
 
 - job 文件（单个爬虫）
 ```python
@@ -140,20 +133,34 @@ class zhifang_job(SPJob):
 
     def __init__(self):
         super().__init__(spider_name=zhifang_Spider.name)
-        self.delete()   # 默认清空上一次未完成的 url
+        # self.delete()   # 如需去重、增量采集，请注释该行
 ```
 
 - spider 文件（单个爬虫）
 ```python
+    custom_settings = {
+        ...,
+        'DUPEFILTER_CLASS': 'scrapy_redis.dupefilter.RFPDupeFilter',
+        'SCHEDULER_PERSIST': True, # 开启持久化
+    }
+   
     def get_callback(self, callback):
         # url去重设置：True 不去重 False 去重
         callback_dt = {
-            'list': (self.list_parse, True),   # 默认都不去重
-            'detail': (self.detail_parse, True),
+            'list': (self.list_parse, False),   # 默认都不去重
+            'detail': (self.detail_parse, False),
         }
         return callback_dt.get(callback)
 ```
 
+- 布隆过滤器。
+
+> 当采集的数据量很大时，增量采集、去重可以使用布隆过滤器，默认申请 256 M 内存，使用 7 个 seeds。
+> 这个配置可以满足 1 亿条请求的去重，按漏失率估计，差不多会有 1 万多条漏采。 [调参与漏失率参考](https://blog.csdn.net/Bone_ACE/article/details/53107018)
+
+```
+    DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter', # 使用布隆过滤器
+```
 
 ### 下载安装
 
@@ -269,3 +276,4 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20200831        | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录|
 | 20201104        | 1.requests 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY |
 | 20201212        | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明|
+| 20210105        | 1.增加布隆过滤器|
