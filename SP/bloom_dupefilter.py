@@ -3,7 +3,7 @@
 # @Time : 2021/1/5 17:20
 # @Author : way
 # @Site : 
-# @Describe: 布隆过滤器 参考 https://blog.csdn.net/Bone_ACE/article/details/53107018
+# @Describe: 布隆过滤器
 
 import importlib
 from hashlib import md5
