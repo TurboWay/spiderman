@@ -147,7 +147,7 @@ class zhifang_job(SPJob):
     def get_callback(self, callback):
         # url去重设置：True 不去重 False 去重
         callback_dt = {
-            'list': (self.list_parse, False),   # 默认都不去重
+            'list': (self.list_parse, False),
             'detail': (self.detail_parse, False),
         }
         return callback_dt.get(callback)
@@ -155,11 +155,27 @@ class zhifang_job(SPJob):
 
 - 布隆过滤器。
 
-> 当采集的数据量很大时，增量采集、去重可以使用布隆过滤器，默认申请 256 M 内存，使用 7 个 seeds。
-> 这个配置可以满足 1 亿条请求的去重，按漏失率估计，差不多会有 1 万多条漏采。 [调参与漏失率参考](https://blog.csdn.net/Bone_ACE/article/details/53107018)
+> 当采集的数据量很大时，可以使用布隆过滤器，该算法占用空间小且可控，适合海量数据去重。
+> 但是该算法会有漏失率，对爬虫而言就是漏爬。可以通过调整过滤器负载个数、内存配置、哈希次数以降低漏失率。
+> 默认配置 256 M 内存，使用 7 个 seeds，这个配置表示漏失概率为 8.56e-05 时，可满足 0.93 亿条字符串的去重。当漏失率为 0.000112 时，可满足 0.98 亿条字符串的去重。[调参与漏失率参考](https://blog.csdn.net/Bone_ACE/article/details/53107018)
 
-```
-    'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter', # 使用布隆过滤器
+```python
+    custom_settings = {
+        ...,
+        'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter',  # 使用布隆过滤器
+        'SCHEDULER_PERSIST': True,  # 开启持久化
+        'BLOOM_NUM': 1,  # 布隆过滤器负载个数，当内存达到限制时，可以增加负载个数
+        'BLOOM_MEM': 256,  # 布隆过滤器内存大小（单位 M），内存最大 512 M （因为 redis string 最大只能 512 M）
+        'BLOOM_K': 7,  # 布隆过滤器哈希次数，次数越少，去重越快，但是漏失率越高
+    }
+   
+    def get_callback(self, callback):
+        # url去重设置：True 不去重 False 去重
+        callback_dt = {
+            'list': (self.list_parse, False),
+            'detail': (self.detail_parse, False),
+        }
+        return callback_dt.get(callback)
 ```
 
 ### 下载安装

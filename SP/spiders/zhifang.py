@@ -45,8 +45,11 @@ class zhifang_Spider(SPRedisSpider):
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件
             'SP.middlewares.SizeRetryMiddleware.MiddleWare': 900  # 重试中间件，允许设置 MINSIZE（int），response.body 长度小于该值时，自动触发重试
         },
-        # 'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter', # 使用布隆过滤器
-        # 'SCHEDULER_PERSIST': True, # 开启持久化
+        # 'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter',  # 使用布隆过滤器
+        # 'SCHEDULER_PERSIST': True,  # 开启持久化
+        # 'BLOOM_NUM': 1,  # 布隆过滤器个数
+        # 'BLOOM_MEM': 256,  # 布隆过滤器内存大小（单位 M）
+        # 'BLOOM_K': 7,  # 布隆过滤器哈希次数
     }
 
     def get_callback(self, callback):
