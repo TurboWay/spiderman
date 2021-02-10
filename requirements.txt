@@ -8,7 +8,7 @@ certifi==2020.4.5.1
 cffi==1.14.0
 chardet==3.0.4
 constantly==15.1.0
-cryptography==3.2
+cryptography==3.3.2
 cssselect==1.1.0
 docopt==0.6.2
 elasticsearch==7.7.1
