@@ -74,7 +74,7 @@ class ElasticSearchPipeline(object):
                     new_item['ctime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                     new_item['spider'] = self.name
                     action = {'_op_type': 'index',  # 操作 index update create delete
-                              '_index': self.name,  # index
+                              '_index': tablename,  # index
                               '_id': rowkey(),
                               '_type': tablename,  # type
                               '_source': new_item}

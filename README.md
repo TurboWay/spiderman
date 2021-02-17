@@ -293,3 +293,4 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20201104        | 1.requests 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY |
 | 20201212        | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明|
 | 20210105        | 1.增加布隆过滤器|
+| 20210217        | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名|
