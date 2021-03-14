@@ -97,11 +97,11 @@ class SPJob:
                 return
             logger.info(f"初始任务数: {size} 启动爬虫数量: {num}")
             pool = ThreadPoolExecutor(max_workers=num)
-            for i in pool.map(self.ssh_run, [i for i in range(num)]):
+            for _ in pool.map(self.ssh_run, range(num)):
                 ...  # 等待所有线程完成
         else:
             logger.name = "spiderman.model.standalone"
             logger.info(f"初始任务数: {size} 启动爬虫数量: {num}")
             pool = ThreadPoolExecutor(max_workers=num)
-            for i in pool.map(self.run, [i for i in range(num)]):
+            for _ in pool.map(self.run, range(num)):
                 ...  # 等待所有线程完成

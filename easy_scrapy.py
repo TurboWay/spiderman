@@ -89,16 +89,16 @@ class ${spidername}_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'SP.middlewares.UserAgentMiddleWare.UserAgentMiddleWare': 100,
-            # 'SP.middlewares.HeadersMiddleWare.MiddleWare': 101,    # 在meta中增加headers
-            # 'SP.middlewares.CookiesMiddleWare.MiddleWare': 102,    # 在meta中增加cookies
-            # 'SP.middlewares.PayloadMiddleWare.MiddleWare': 103,    # 在meta中增加payload
-            # 'SP.middlewares.ProxyMiddleWare.ProxyMiddleWare': 104,  # 使用代理ip
-            # 'SP.middlewares.RequestsMiddleWare.RequestMiddleWare': 105,  # 使用requests
+            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,
+            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在meta中增加headers
+            # 'SP.middlewares.SPMiddleWare.CookiesMiddleWare': 102,    # 在meta中增加cookies
+            # 'SP.middlewares.SPMiddleWare.PayloadMiddleWare': 103,    # 在meta中增加payload
+            # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 104,      # 使用代理ip
+            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 105,   # 使用requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
             # 'scrapy_splash.SplashMiddleware': 725,          # 在meta中增加splash 需要启用3个中间件
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件
-            'SP.middlewares.SizeRetryMiddleware.MiddleWare': 900  # 重试中间件，允许设置 MINSIZE（int），response.body 长度小于该值时，自动触发重试
+            'SP.middlewares.SPMiddleWare.SizeRetryMiddleWare': 900  # 重试中间件，允许设置 MINSIZE（int），response.body 长度小于该值时，自动触发重试
         },
     }
 

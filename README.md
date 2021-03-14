@@ -34,7 +34,7 @@
     * [注意事项](#注意事项)
     * [hive环境问题](#hive环境问题)
     * [更新日志](#更新日志)
-
+    * [TODO](#TODO)
 
 ### demo采集效果
 ![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/file.jpg)
@@ -294,3 +294,12 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20201212        | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明|
 | 20210105        | 1.增加布隆过滤器|
 | 20210217        | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名|
+| 20210314        | 1.所有反爬中间件合并到 SPMiddleWare|
+
+
+### TODO
+
+- 1、增加 cookies pool 中间件，用于需要多个账号切换采集的场景
+- 2、优化 headers/cookies 中间件，减少 redis 的内存占用
+- 3、添加 api 服务，支持 api 调用，管理分布式爬虫进程
+- 4、增加附件下载器
