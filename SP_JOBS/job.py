@@ -10,7 +10,8 @@ import logging
 import random
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from SP.utils.make_jobs import ScheduledRequest, RedisCtrl
+from SP.utils.base import ScheduledRequest
+from SP.utils.ctrl_redis import RedisCtrl
 from SP.utils.ctrl_ssh import SSH
 from SP.settings import CRAWL_MODEL, SLAVES, SLAVES_BALANCE, SLAVES_ENV, SLAVES_WORKSPACE
 

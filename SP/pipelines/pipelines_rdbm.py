@@ -10,7 +10,7 @@ import logging
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.types import VARCHAR
-from SP.utils.make_key import rowkey, bizdate
+from SP.utils.base import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
 

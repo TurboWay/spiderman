@@ -8,7 +8,7 @@
 import time
 import logging
 from elasticsearch import Elasticsearch, helpers
-from SP.utils.make_key import rowkey, bizdate
+from SP.utils.base import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
 

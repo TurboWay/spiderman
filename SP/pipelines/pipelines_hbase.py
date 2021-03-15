@@ -8,7 +8,7 @@
 import time
 import logging
 import happybase
-from SP.utils.make_key import rowkey, bizdate
+from SP.utils.base import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
 

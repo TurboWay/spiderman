@@ -7,7 +7,7 @@
 
 import json
 from scrapy_redis.spiders import RedisSpider, bytes_to_str
-from SP.utils.make_jobs import ScheduledRequest
+from SP.utils.base import ScheduledRequest
 from scrapy.http import Request, FormRequest
 from scrapy_splash import SplashRequest, SplashFormRequest
 

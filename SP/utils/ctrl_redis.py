@@ -1,25 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# @Time : 2019/4/2 9:57
+# @Time : 2021/3/15 20:47
 # @Author : way
 # @Site : 
-# @Describe: 通用类，用来构造start_urls 和操作redis
+# @Describe: 操作 redis
 
 import redis
 import json
 import logging
 from SP.settings import REDIS_HOST, REDIS_PORT
-
-
-# scrapy_redis请求类
-class ScheduledRequest:
-
-    def __init__(self, **kwargs):
-        self.url = kwargs.get('url')
-        self.method = kwargs.get('method', 'GET')
-        self.callback = kwargs.get('callback')
-        self.body = kwargs.get('body')
-        self.meta = kwargs.get('meta')
 
 
 # 操作redis基础类

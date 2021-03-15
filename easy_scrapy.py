@@ -62,9 +62,8 @@ spider = """#!/usr/bin/env python3
 from bs4 import BeautifulSoup
 from SP.spiders.SPRedisSpider import SPRedisSpider
 from SP.items.${spidername}_items import *
-from SP.utils.make_jobs import ScheduledRequest, RedisCtrl
-from SP.utils.make_key import md5
-from SP.utils.make_log import log
+from SP.utils.ctrl_redis import RedisCtrl
+from SP.utils.base import md5, log, ScheduledRequest
 from SP.utils.tool import get_file_type
 
 

@@ -12,7 +12,7 @@ import requests
 from scrapy.http import HtmlResponse
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.utils.response import response_status_message
-from SP.utils.make_jobs import RedisCtrl
+from SP.utils.ctrl_redis import RedisCtrl
 
 USER_AGENT_LIST = (
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",

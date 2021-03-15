@@ -8,7 +8,7 @@
 import time
 import logging
 from hdfs import Client
-from SP.utils.make_key import rowkey, bizdate
+from SP.utils.base import rowkey, bizdate
 from SP.utils.ctrl_hive import CtrlHive
 
 logger = logging.getLogger(__name__)

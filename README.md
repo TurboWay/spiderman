@@ -303,4 +303,4 @@ META_ENGINE = 'sqlite:///meta.db'
 - 1、增加 cookies pool 中间件，用于需要多个账号切换采集的场景
 - 2、~~优化 headers 中间件，减少 redis 的内存占用~~
 - 3、添加 api 服务，支持 api 调用，管理分布式爬虫进程
-- 4、增加附件下载器
+- 4、增加独立的附件下载器

@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # 采集页数
     pages = 10
     # 爬虫数量
-    num = 1
+    num = 2
 
     # 支持传参调用
     opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num="])

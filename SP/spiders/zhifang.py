@@ -7,9 +7,8 @@
 from bs4 import BeautifulSoup
 from SP.spiders.SPRedisSpider import SPRedisSpider
 from SP.items.zhifang_items import *
-from SP.utils.make_jobs import ScheduledRequest, RedisCtrl
-from SP.utils.make_key import md5
-from SP.utils.make_log import log
+from SP.utils.ctrl_redis import RedisCtrl
+from SP.utils.base import md5, log, ScheduledRequest
 from SP.utils.tool import get_file_type
 
 
@@ -34,14 +33,15 @@ class zhifang_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100, # 随机 user-agent
+            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,  # 随机 user-agent
             # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在 meta 中增加 headers
             # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 102,      # 使用代理ip
             # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 103,   # 使用 requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
             # 'scrapy_splash.SplashMiddleware': 725,          # 在meta中增加splash 需要启用3个中间件
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件
-            'SP.middlewares.SPMiddleWare.SizeRetryMiddleWare': 900  # 重试中间件，允许设置 MINSIZE（int），response.body 长度小于该值时，自动触发重试
+            'SP.middlewares.SPMiddleWare.SizeRetryMiddleWare': 900
+            # 重试中间件，允许设置 MINSIZE（int），response.body 长度小于该值时，自动触发重试
         },
         # 'DUPEFILTER_CLASS': 'SP.bloom_dupefilter.BloomRFDupeFilter',  # 使用布隆过滤器
         # 'SCHEDULER_PERSIST': True,  # 开启持久化
