@@ -38,7 +38,7 @@ class RedisCtrl:
         try:
             pipe = self.r.pipeline(transaction=True)
             for req in reqs:
-                self.r.rpush(redis_key, json.dumps(req.__dict__))
+                self.r.rpush(redis_key, json.dumps(req.__dict__, ensure_ascii=False))
             pipe.execute()
         except Exception as e:
             logging.error(f"redis写入失败：{e}")
