@@ -89,7 +89,7 @@ class ${spidername}_Spider(SPRedisSpider):
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,    # 随机 user-agent
-            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在 meta 中增加 headers
+            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 定制 headers
             # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 102,      # 使用代理ip
             # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 103,   # 使用 requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
