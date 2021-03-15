@@ -36,7 +36,8 @@ class zhifang_Spider(SPRedisSpider):
             'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,  # 随机 user-agent
             # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 定制 headers
             # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 102,      # 使用代理ip
-            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 103,   # 使用 requests
+            # 'SP.middlewares.SPMiddleWare.CookiesPoolMiddleWare': 103,   # 使用 cookies 池 随机切换采集账号
+            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 104,   # 使用 requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
             # 'scrapy_splash.SplashMiddleware': 725,          # 在meta中增加splash 需要启用3个中间件
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件

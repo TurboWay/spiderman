@@ -37,7 +37,9 @@ class Job:
             reqs = func(self, *args, **kwargs)
             self.redisctrl.reqs_push(self.redis_key, reqs)
             if self.headers:
-                self.redisctrl.set_string(self.redis_headers, json.dumps(self.headers, ensure_ascii=False))
+                self.redisctrl.add_string(self.redis_headers, json.dumps(self.headers, ensure_ascii=False))
+            if self.cookies:
+                self.redisctrl.add_set(self.redis_cookies, *self.cookies)
 
         return wrapper
 
@@ -52,6 +54,7 @@ class SPJob(Job):
         self.redis_headers = f'headers:{spider_name}'
         self.redis_cookies = f'cookies:{spider_name}'
         self.headers = None
+        self.cookies = None
         self.redisctrl = RedisCtrl()
 
     # 生成任务，重写该函数

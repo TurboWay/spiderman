@@ -51,9 +51,7 @@ class RedisCtrl:
         :return: 获取redis_key的数量长度
         """
         try:
-            pipe = self.r.pipeline(transaction=True)
             size = self.r.llen(key)
-            pipe.execute()
             return size
         except Exception as e:
             logging.error(f"redis读取失败：{e}")
@@ -74,7 +72,7 @@ class RedisCtrl:
         except Exception as e:
             logging.error(f"redis复制失败：{e}")
 
-    def set_string(self, key, value):
+    def add_string(self, key, value):
         """
         :param key:
         :param value:
@@ -94,3 +92,33 @@ class RedisCtrl:
             return self.r.get(key).decode()
         except Exception as e:
             logging.error(f"redis写入失败：{e}")
+
+    def add_set(self, key, *args):
+        """
+        :param key:
+        :param value:
+        :return: 写入 redis set
+        """
+        try:
+            self.r.sadd(key, *args)
+        except Exception as e:
+            logging.error(f"redis写入失败：{e}")
+
+    def remove_set(self, key, value):
+        """
+        :param key: redis_key.key
+        :return: 删除redis_key中的指定记录key
+        """
+        try:
+            self.r.srem(key, value)
+        except Exception as e:
+            logging.error(f"redis删除失败：{e}")
+
+    def get_set(self, key):
+        """
+        :return: 从redis_key中取出所有值
+        """
+        try:
+            return [i.decode() for i in self.r.smembers(key)]
+        except Exception as e:
+            logging.error(f"redis读取失败：{e}")

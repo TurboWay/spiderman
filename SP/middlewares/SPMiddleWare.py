@@ -77,6 +77,54 @@ class ProxyMiddleWare(object):
         request.meta['proxy'] = proxies.get(tp)
 
 
+class CookiesPoolMiddleWare(object):
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.spider.name)
+
+    def __init__(self, name):
+        self.key = f'cookies:{name}'
+        self.redis = RedisCtrl()
+
+    # 随机取 cookies
+    def process_request(self, request, spider):
+        cookies = self.redis.get_set(self.key)
+        if not cookies:
+            spider.crawler.engine.close_spider(spider, "没有可用的 cookies")
+        request.headers['Cookie'] = random.choice(cookies)
+
+
+class RequestsMiddleWare(object):
+    """
+    有时scrapy请求总是有问题，可以试试换成 requests 请求
+    """
+
+    def __init__(self, **kwargs):
+        self.encoding = kwargs.get('ENCODING', 'utf-8')
+        self.time_out = kwargs.get('DOWNLOAD_TIMEOUT', 60)
+        self.delay = kwargs.get('DOWNLOAD_DELAY', 0)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        return cls(**settings)
+
+    def process_request(self, request, spider):
+        headers = {key.decode('utf-8'): value[0].decode('utf-8') for key, value in request.headers.items()}
+        if request.meta.get('payload'):
+            response = requests.post(url=request.url, data=json.dumps(request.meta.get('payload')), headers=headers,
+                                     timeout=self.time_out)
+        elif request.method == 'POST':
+            response = requests.post(url=request.url, data=request.body, headers=headers, timeout=self.time_out)
+        else:
+            response = requests.get(url=request.url, headers=headers, timeout=self.time_out)
+        if self.delay > 0:
+            time.sleep(self.delay)
+        return HtmlResponse(url=request.url, body=response.content, request=request, encoding=self.encoding,
+                            status=response.status_code)
+
+
 class SizeRetryMiddleWare(RetryMiddleware):
     """
     继承RetryMiddleware，增加response大小判断重试，可以应用于splash重新渲染 或者其它场景
@@ -99,32 +147,3 @@ class SizeRetryMiddleWare(RetryMiddleware):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(crawler.settings)
-
-
-class RequestsMiddleWare(object):
-    """
-    有时scrapy请求总是有问题，可以试试换成 requests 请求
-    """
-
-    def __init__(self, **kwargs):
-        self.encoding = kwargs.get('ENCODING', 'utf-8')
-        self.time_out = kwargs.get('DOWNLOAD_TIMEOUT', 60)
-        self.delay = kwargs.get('DOWNLOAD_DELAY', 0)
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        settings = crawler.settings
-        return cls(**settings)
-
-    def process_request(self, request, spider):
-        headers = {key.decode('utf-8'): value[0].decode('utf-8') for key, value in request.headers.items()}
-        if request.meta.get('payload'):
-            response = requests.post(url=request.url, data=json.dumps(request.meta.get('payload')), headers=headers, timeout=self.time_out)
-        elif request.method == 'POST':
-            response = requests.post(url=request.url, data=request.body, headers=headers, timeout=self.time_out)
-        else:
-            response = requests.get(url=request.url, headers=headers, timeout=self.time_out)
-        if self.delay > 0:
-            time.sleep(self.delay)
-        return HtmlResponse(url=request.url, body=response.content, request=request, encoding=self.encoding,
-                            status=response.status_code)

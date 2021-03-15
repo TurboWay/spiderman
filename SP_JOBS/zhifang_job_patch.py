@@ -21,6 +21,9 @@ class zhifang_job(SPJob):
         self.headers = {
             # 有反爬的话，可以在这边定制请求头
         }
+        self.cookies = (
+            # 多账号采集的话，可以在这边定制多个 cookie string
+        )
 
     @Job.push
     def make_list_job(self, pages):
