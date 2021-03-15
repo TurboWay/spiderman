@@ -295,11 +295,12 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20210105        | 1.增加布隆过滤器|
 | 20210217        | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名|
 | 20210314        | 1.所有反爬中间件合并到 SPMiddleWare|
+| 20210315        | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookies 中间件，cookies 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件|
 
 
 ### TODO
 
 - 1、增加 cookies pool 中间件，用于需要多个账号切换采集的场景
-- 2、优化 headers/cookies 中间件，减少 redis 的内存占用
+- 2、~~优化 headers 中间件，减少 redis 的内存占用~~
 - 3、添加 api 服务，支持 api 调用，管理分布式爬虫进程
 - 4、增加附件下载器

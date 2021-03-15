@@ -5,6 +5,7 @@
 # @Site : all
 # @Describe: 基础类
 
+import json
 import logging
 import random
 import subprocess
@@ -22,33 +23,47 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-class SPJob:
+class Job:
+
+    @classmethod
+    def push(cls, func):
+        """
+        :param func:
+        :return: 将请求、定制headers 推到 redis
+        """
+
+        def wrapper(self, *args, **kwargs):
+            reqs = func(self, *args, **kwargs)
+            self.redisctrl.reqs_push(self.redis_key, reqs)
+            if self.headers:
+                self.redisctrl.set_string(self.redis_headers, json.dumps(self.headers, ensure_ascii=False))
+
+        return wrapper
+
+
+class SPJob(Job):
 
     def __init__(self, spider_name):
         self.spider_name = spider_name
         self.redis_key = f'{spider_name}:start_urls'
         self.redis_dupefilter = f'{spider_name}:dupefilter'
         self.redis_requests = f'{spider_name}:requests'
-        self.reqs = []
+        self.redis_headers = f'headers:{spider_name}'
+        self.redis_cookies = f'cookies:{spider_name}'
+        self.headers = None
         self.redisctrl = RedisCtrl()
 
     # 生成任务，重写该函数
+    @Job.push
     def make_job(self, pages):
         for pagenum in range(1, pages + 1):
-            req = ScheduledRequest(
+            yield ScheduledRequest(
                 url='',  # 请求地址
                 method='',  # 请求方式  GET/POST
                 callback='',  # 回调函数标识
                 body={},  # post表单
                 meta={}  # 元数据和反爬配置
             )
-            self.reqs.append(req)
-        self.push()
-
-    # 将任务推到redis
-    def push(self):
-        self.redisctrl.reqs_push(self.redis_key, self.reqs)
-        self.reqs.clear()
 
     # 删除redis上一次残留任务
     def delete(self):

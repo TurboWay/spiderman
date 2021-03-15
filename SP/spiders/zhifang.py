@@ -34,12 +34,10 @@ class zhifang_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,
-            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在meta中增加headers
-            # 'SP.middlewares.SPMiddleWare.CookiesMiddleWare': 102,    # 在meta中增加cookies
-            # 'SP.middlewares.SPMiddleWare.PayloadMiddleWare': 103,    # 在meta中增加payload
-            # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 104,      # 使用代理ip
-            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 105,   # 使用requests
+            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100, # 随机 user-agent
+            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在 meta 中增加 headers
+            # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 102,      # 使用代理ip
+            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 103,   # 使用 requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
             # 'scrapy_splash.SplashMiddleware': 725,          # 在meta中增加splash 需要启用3个中间件
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件

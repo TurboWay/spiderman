@@ -12,6 +12,7 @@ import requests
 from scrapy.http import HtmlResponse
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.utils.response import response_status_message
+from SP.utils.make_jobs import RedisCtrl
 
 USER_AGENT_LIST = (
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
@@ -49,21 +50,16 @@ class HeadersMiddleWare(object):
     定制请求头
     """
 
-    def process_request(self, request, spider):
-        headers = request.meta.get('headers')
-        if headers:
-            request.headers.update(headers)
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.spider.name)
 
-
-class CookiesMiddleWare(object):
-    """
-    定制Cookies
-    """
+    def __init__(self, name):
+        self.headers = RedisCtrl().get_string(f'headers:{name}')
+        self.headers = eval(self.headers)
 
     def process_request(self, request, spider):
-        cookies = request.meta.get('cookies')
-        if cookies:
-            request.cookies = cookies
+        request.headers.update(self.headers)
 
 
 class ProxyMiddleWare(object):
@@ -122,7 +118,9 @@ class RequestsMiddleWare(object):
 
     def process_request(self, request, spider):
         headers = {key.decode('utf-8'): value[0].decode('utf-8') for key, value in request.headers.items()}
-        if request.method == 'POST':
+        if request.meta.get('payload'):
+            response = requests.post(url=request.url, data=json.dumps(request.meta.get('payload')), headers=headers, timeout=self.time_out)
+        elif request.method == 'POST':
             response = requests.post(url=request.url, data=request.body, headers=headers, timeout=self.time_out)
         else:
             response = requests.get(url=request.url, headers=headers, timeout=self.time_out)
@@ -130,19 +128,3 @@ class RequestsMiddleWare(object):
             time.sleep(self.delay)
         return HtmlResponse(url=request.url, body=response.content, request=request, encoding=self.encoding,
                             status=response.status_code)
-
-
-class PayloadMiddleWare(RequestsMiddleWare):
-    """
-    继承RequestMiddleWare，payload 传参，需要特殊处理，可以直接使用该中间件
-    """
-
-    def process_request(self, request, spider):
-        if request.meta.get('payload'):
-            headers = {key.decode('utf-8'): value[0].decode('utf-8') for key, value in request.headers.items()}
-            payload = request.meta.get('payload')
-            response = requests.post(url=request.url, data=json.dumps(payload), headers=headers, timeout=self.time_out)
-            if self.delay > 0:
-                time.sleep(self.delay)
-            return HtmlResponse(url=request.url, body=response.content, request=request, encoding=self.encoding,
-                                status=response.status_code)

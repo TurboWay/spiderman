@@ -89,12 +89,10 @@ class ${spidername}_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,
-            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在meta中增加headers
-            # 'SP.middlewares.SPMiddleWare.CookiesMiddleWare': 102,    # 在meta中增加cookies
-            # 'SP.middlewares.SPMiddleWare.PayloadMiddleWare': 103,    # 在meta中增加payload
-            # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 104,      # 使用代理ip
-            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 105,   # 使用requests
+            'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,    # 随机 user-agent
+            # 'SP.middlewares.SPMiddleWare.HeadersMiddleWare': 101,    # 在 meta 中增加 headers
+            # 'SP.middlewares.SPMiddleWare.ProxyMiddleWare': 102,      # 使用代理ip
+            # 'SP.middlewares.SPMiddleWare.RequestsMiddleWare': 103,   # 使用 requests
             # 'scrapy_splash.SplashCookiesMiddleware': 723,     # 在meta中增加splash 需要启用3个中间件
             # 'scrapy_splash.SplashMiddleware': 725,          # 在meta中增加splash 需要启用3个中间件
             # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,    # 在meta中增加splash 需要启用3个中间件
@@ -188,26 +186,25 @@ class ${spidername}_job(SPJob):
     def __init__(self):
         super().__init__(spider_name=${spidername}_Spider.name)
         self.delete()  # 如需去重、增量采集，请注释该行
+        self.headers = {
+            # 有反爬的话，可以在这边定制请求头
+        }
 
+    @Job.push
     def make_job(self, pages):
         for pagenum in range(1, pages + 1):
             url = ''
-            req = ScheduledRequest(
+            yield ScheduledRequest(
                 url=url,  # 请求地址
                 method='GET',  # 请求方式  GET/POST
                 callback='list',  # 回调函数标识
                 body={},  # 如果是POST，在这边填写post字典
                 meta={
                     'pagenum': pagenum,  # 页码
-                    # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
-                    # 'headers': {},      # 一般反爬
-                    # 'cookies': {},      # 一般反爬
                     # 'payload': {},      # request payload 传输方式
-                    # 'splash': {'wait': 2}  # js加载、异步加载渲染
+                    # 'splash' : {'wait': 2}  # js加载、异步加载渲染      
                 }
             )
-            self.reqs.append(req)
-        self.push()
 
 
 if __name__ == "__main__":
@@ -250,7 +247,11 @@ class ${spidername}_job(SPJob):
     def __init__(self):
         super().__init__(spider_name=${spidername}_Spider.name)
         self.delete()  # 如需去重、增量采集，请注释该行
+        self.headers = {
+            # 有反爬的话，可以在这边定制请求头
+        }
 
+    @Job.push
     def make_list_job(self, pages):
         sql = \"\"\"
                select pagenum 
@@ -262,23 +263,19 @@ class ${spidername}_job(SPJob):
         ret = list(set(range(1, pages + 1)) - set(rows))  # 未采集的页码
         for pagenum in ret:
             url = ''
-            req = ScheduledRequest(
+            yield ScheduledRequest(
                 url=url,  # 请求地址
                 method='GET',  # 请求方式  GET/POST
                 callback='list',  # 回调函数标识
                 body={},  # 如果是POST，在这边填写post字典
                 meta={
-                    'pagenum': pagenum,  # 页码
-                    # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
-                    # 'headers': {},      # 一般反爬
-                    # 'cookies': {},      # 一般反爬
+                    'pagenum': pagenum,  # 页码                    
                     # 'payload': {},      # request payload 传输方式
-                    # 'splash': {'wait': 2}  # js加载、异步加载渲染
+                    # 'splash' : {'wait': 2}  # js加载、异步加载渲染      
                 }
             )
-            self.reqs.append(req)
-        self.push()
 
+    @Job.push
     def make_detail_job(self):
         sql = \"\"\"
                 select a.detail_full_url, a.pagenum, a.pkey
@@ -289,25 +286,20 @@ class ${spidername}_job(SPJob):
         rows = rdbm_execute(sql)
         for row in rows:
             detail_full_url, pagenum, pkey = row
-            req = ScheduledRequest(
+            yield ScheduledRequest(
                 url=detail_full_url,  
                 method='GET',
                 callback='detail',
                 body={},       # 如果是POST，在这边填写post字典
                 meta={
                     'pagenum': pagenum,  # 页码
-                    'fkey': pkey,  # 外键
-                    # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
-                    # 'headers': {},      # 一般反爬
-                    # 'cookies': {},      # 一般反爬
+                    'fkey': pkey,  # 外键                
                     # 'payload': {},      # request payload 传输方式
-                    # 'splash': {'wait': 2}  # js加载、异步加载渲染
+                    # 'splash' : {'wait': 2}  # js加载、异步加载渲染      
                 }
-                )
-            self.reqs.append(req)
-        self.push()
-        
-        
+            )
+            
+                
 if __name__ == "__main__":
     # 采集页数
     pages = 1

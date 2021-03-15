@@ -84,3 +84,24 @@ class RedisCtrl:
             pipe.execute()
         except Exception as e:
             logging.error(f"redis复制失败：{e}")
+
+    def set_string(self, key, value):
+        """
+        :param key:
+        :param value:
+        :return: 写入 redis string
+        """
+        try:
+            self.r.set(key, value)
+        except Exception as e:
+            logging.error(f"redis写入失败：{e}")
+
+    def get_string(self, key):
+        """
+        :param key:
+        :return: 读取 string
+        """
+        try:
+            return self.r.get(key).decode()
+        except Exception as e:
+            logging.error(f"redis写入失败：{e}")
