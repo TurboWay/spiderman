@@ -10,7 +10,7 @@ import time
 import base64
 from hashlib import md5
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 from SP.settings import ENGINE_CONFIG
 
 
@@ -134,15 +134,8 @@ def url_check(url, dirty_words=None):
     return True
 
 
-def rdbm_execute(sql):
+def rdbm_session():
     """
-    执行sql
-    :param sql:
-    :return:
+    :return: 返回 rdbm session
     """
-    engine = create_engine(ENGINE_CONFIG)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    rows = session.execute(sql).fetchall()
-    session.close()
-    return rows
+    return Session(create_engine(ENGINE_CONFIG))

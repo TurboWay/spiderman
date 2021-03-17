@@ -28,8 +28,7 @@ class FilePipeline(FilesPipeline):
     def file_path(self, request, response=None, info=None):
         spider = request.meta['spider']
         file_name = request.meta['file_name']
-        file_type = request.meta['file_type']
-        filename = f'{spider}/{file_name}.{file_type}'
+        filename = f'{spider}/{file_name}'
         return filename
 
     def item_completed(self, results, item, info):

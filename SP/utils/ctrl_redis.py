@@ -56,6 +56,24 @@ class RedisCtrl:
         except Exception as e:
             logging.error(f"redis读取失败：{e}")
 
+    def pop_list(self, key, size):
+        """
+        :param key:
+        :param size: int
+        :return: 从_key中pop出指定数量的值
+        """
+        try:
+            pipe = self.r.pipeline(transaction=True)
+            vals = []
+            for i in range(size):
+                top = self.r.lpop(key)
+                if top:
+                    vals.append(top.decode())
+            pipe.execute()
+            return vals
+        except Exception as e:
+            logging.error(f"redis读取失败：{e}")
+
     def copy(self, source_key, target_key):
         """
         :param source_key:
@@ -89,7 +107,8 @@ class RedisCtrl:
         :return: 读取 string
         """
         try:
-            return self.r.get(key).decode()
+            value = self.r.get(key)
+            return value.decode() if value else None
         except Exception as e:
             logging.error(f"redis写入失败：{e}")
 

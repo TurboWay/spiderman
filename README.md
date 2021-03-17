@@ -15,7 +15,8 @@
     * [采集效果](#demo采集效果)
     * [爬虫元数据](#爬虫元数据)
     * [分布式爬虫运行](#cluster模式)
-    * [单机爬虫运行](#standalone模式) 
+    * [单机爬虫运行](#standalone模式)
+    * [附件下载](#附件下载)      
     * [kafka实时采集监控示例](#kafka实时采集监控)   
     
 * [介绍](#功能)
@@ -26,6 +27,7 @@
     * [下载安装](#下载安装)
     * [如何开发一个新爬虫](#如何开发一个新爬虫)
     * [如何进行补爬](#如何进行补爬)
+    * [如何下载附件](#如何下载附件)
     * [如何扩展分布式爬虫](#如何扩展分布式爬虫)
     * [如何管理爬虫元数据](#如何管理爬虫元数据)
     * [如何配合kafka做实时采集监控](#如何配合kafka做实时采集监控)
@@ -37,22 +39,28 @@
     * [TODO](#TODO)
 
 ### demo采集效果
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/file.jpg)
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/file_meta.jpg)
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/list_data.jpg)
+
+![image](https://gitee.com/TurboWay/blogimg/raw/master/img/file.jpg)
+
+![image](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210317145454296.png)
+
+![image](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210317145413391.png)
 
 ### 爬虫元数据
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/meta.jpg)
+![meta](https://gitee.com/TurboWay/blogimg/raw/master/img/meta.jpg)
 
-### cluster模式
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/cluster.jpg)
+###cluster模式
+![cluster](https://gitee.com/TurboWay/blogimg/raw/master/img/cluster.jpg)
 
 ### standalone模式
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/standalone.jpg)
+![standalone](https://gitee.com/TurboWay/blogimg/raw/master/img/standalone.jpg)
+
+### 附件下载
+![image](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210317144158260.png)
+
 
 ### kafka实时采集监控
-![image](https://github.com/TurboWay/imgstore/blob/master/spiderman/mon.jpg)
-
+![mon](https://gitee.com/TurboWay/blogimg/raw/master/img/mon.jpg)
 
 ### 功能
 
@@ -213,19 +221,29 @@ class zhifang_job(SPJob):
 
 以上代码文件编写完成后，直接执行 python SP_JOBS/spidername_job_patch.py
 
+### 如何下载附件
+
+提供两种方式下载：
+
+* 1、直接在 spider 中启用附件下载管道
+* 2、使用自定义的下载器 easy_download.py 传参下载
+
+> jpg/pdf/word...等各种各样的文件，统称为附件。
+> 下载附件是比较占用带宽的行为，所以在大规模采集中，最好是先把结构化的表数据、附件的元数据入库，
+> 保证数据的完整性，然后再根据需要，通过下载器进行附件下载。
 
 
 ### 如何扩展分布式爬虫
 
-采集模式有两种(在 settings 控制)： 单机 standalone(默认) 和 分布式 cluster
+采集模式有两种(在 settings 控制)： 单机 standalone(默认) 和 集群分布式
 
 如果想切换成分布式爬虫，需要在 spiderman/SP/settings.py 中启用以下配置
 
  <font color='red'>  注意：前提是 所有SLAVE机器的爬虫代码一致、python环境一致，都可以运行爬虫demo </font>
 
 ```python
-# 采集模式 standalone 单机 (默认);  cluster 分布式 需要配置下方的 slaves
-CRAWL_MODEL = 'cluster'
+# 集群模式 False 单机 (默认);  True 分布式 需要配置下方的 slaves
+CLUSTER_ENABLE = True
 ```
 
 | 配置名称 | 意义  | 示例  |
@@ -286,7 +304,7 @@ META_ENGINE = 'sqlite:///meta.db'
 
 ### 更新日志
 
-| 日期 | 更新内容 | 
+| 日期 | 更新内容 |
 | ------------ | ------------ |
 | 20200803        | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status) |
 | 20200831        | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录|
@@ -296,11 +314,12 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20210217        | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名|
 | 20210314        | 1.所有反爬中间件合并到 SPMiddleWare|
 | 20210315        | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookie 中间件，cookie 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件 <br> 5.增加 CookiesPool 中间件，用于需要多个账号随机切换采集的场景|
+| 20210317        | 1.增加可以脱离 scrapy 独立工作的、支持分布式的附件下载器 |
 
 
 ### TODO
 
-- 1、~~增加 cookies pool 中间件，用于需要多个账号切换采集的场景~~
-- 2、~~优化 headers 中间件，减少 redis 的内存占用~~
+- ~~1、增加 cookies pool 中间件，用于需要多个账号切换采集的场景~~
+- ~~2、优化 headers 中间件，减少 redis 的内存占用~~
 - 3、添加 api 服务，支持 api 调用，管理分布式爬虫进程
-- 4、增加独立的附件下载器
+- ~~4、增加独立的附件下载器~~

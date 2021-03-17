@@ -123,10 +123,10 @@ class zhifang_Spider(SPRedisSpider):
             file_item = zhifang_file_Item()
             # save value for your item here like:
             # file_item['file_url'] = response.urljoin(file_url)
-            file_item['px'] = px
             file_item['file_url'] = response.urljoin(file_url)
-            file_item['file_name'] = f"{detail_item['plot_name']}/{px}"
             file_item['file_type'] = get_file_type(file_url, 'jpg')
+            file_item['px'] = px
+            file_item['file_name'] = f"{detail_item['plot_name']}/{px}.{file_item['file_type']}"
             # default column
             file_item['fkey'] = response.meta.get('fkey')
             file_item['pagenum'] = response.meta.get('pagenum')

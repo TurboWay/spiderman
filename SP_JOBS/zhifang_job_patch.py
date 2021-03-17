@@ -10,7 +10,7 @@ import getopt
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from SP_JOBS.job import *
 from SP.spiders.zhifang import zhifang_Spider
-from SP.utils.tool import rdbm_execute
+from SP.utils.tool import rdbm_session
 
 
 class zhifang_job(SPJob):
@@ -32,7 +32,8 @@ class zhifang_job(SPJob):
                from zhifang_list 
                group by pagenum 
                 """
-        rows = rdbm_execute(sql)
+        with rdbm_session() as session:
+            rows = session.execute(sql).fetchall()
         rows = [int(row[0]) for row in rows]
         ret = list(set(range(1, pages + 1)) - set(rows))  # 未采集的页码
         for pagenum in ret:
@@ -57,7 +58,8 @@ class zhifang_job(SPJob):
                 left join zhifang_detail b on a.pkey = b.fkey
                 where b.keyid is null
                 """
-        rows = rdbm_execute(sql)
+        with rdbm_session() as session:
+            rows = session.execute(sql).fetchall()
         for row in rows:
             detail_full_url, pagenum, pkey = row
             yield ScheduledRequest(
