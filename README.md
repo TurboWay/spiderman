@@ -49,7 +49,7 @@
 ### 爬虫元数据
 ![meta](https://gitee.com/TurboWay/blogimg/raw/master/img/meta.jpg)
 
-###cluster模式
+### cluster模式
 ![cluster](https://gitee.com/TurboWay/blogimg/raw/master/img/cluster.jpg)
 
 ### standalone模式
