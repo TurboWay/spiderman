@@ -141,3 +141,28 @@ class RedisCtrl:
             return [i.decode() for i in self.r.smembers(key)]
         except Exception as e:
             logging.error(f"redis读取失败：{e}")
+
+    def add_hash(self, redis_key, key, value):
+        try:
+            self.r.hset(redis_key, key, value)
+        except Exception as e:
+            logging.error(f"redis写入失败：{e}")
+
+    def remove_hash(self, redis_key, key):
+        try:
+            self.r.hdel(redis_key, key)
+        except Exception as e:
+            logging.error(f"redis删除失败：{e}")
+
+    def get_hash(self, redis_key, key):
+        try:
+            return self.r.hget(redis_key, key.encode()).decode()
+        except Exception as e:
+            logging.error(f"redis读取失败：{e}")
+
+    def get_hashall(self, redis_key):
+        try:
+            dicts = self.r.hgetall(redis_key)
+            return {key.decode(): val.decode() for key, val in dicts.items()}
+        except Exception as e:
+            logging.error(f"redis读取失败：{e}")

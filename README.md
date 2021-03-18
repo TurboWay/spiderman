@@ -31,6 +31,7 @@
     * [如何扩展分布式爬虫](#如何扩展分布式爬虫)
     * [如何管理爬虫元数据](#如何管理爬虫元数据)
     * [如何配合kafka做实时采集监控](#如何配合kafka做实时采集监控)
+    * [如何使用爬虫api](#如何使用爬虫api)
     
 * [其它](#注意事项)
     * [注意事项](#注意事项)
@@ -285,6 +286,9 @@ META_ENGINE = 'sqlite:///meta.db'
 2. 自定义监控规则（修改编写 kafka_mon.py , 并运行该脚本程序, 开始监控）
 3. 在 spider 中启用 kafka 管道（运行爬虫 job , 开始采集）
 
+### 如何使用爬虫api
+
+直接运行 api.py，然后可以通过 http://127.0.0.1:2021/docs 查看相关的 api 文档。
 
 ### 注意事项
 1. 字段名称不能使用 tablename、isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
@@ -315,11 +319,6 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20210314        | 1.所有反爬中间件合并到 SPMiddleWare|
 | 20210315        | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookie 中间件，cookie 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件 <br> 5.增加 CookiesPool 中间件，用于需要多个账号随机切换采集的场景|
 | 20210317        | 1.增加可以脱离 scrapy 独立工作的、支持分布式的附件下载器 |
+| 20210318        | 1.增加 api 服务 |
 
 
-### TODO
-
-- ~~1、增加 cookies pool 中间件，用于需要多个账号切换采集的场景~~
-- ~~2、优化 headers 中间件，减少 redis 的内存占用~~
-- 3、添加 api 服务，支持 api 调用，管理分布式爬虫进程
-- ~~4、增加独立的附件下载器~~

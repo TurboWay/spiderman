@@ -48,14 +48,18 @@ if __name__ == "__main__":
     num = 1
 
     # 支持传参调用
-    opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num="])
+    opts, args = getopt.getopt(sys.argv[1:], "p:n:", ["pages=", "num=", "onlyjob="])
+    onlyjob = None
     for op, value in opts:
         if op in ("-p", "--pages"):
             pages = int(value)
         elif op in ("-n", "--num"):
             num = int(value)
+        elif op in ("--onlyjob"):
+            onlyjob = value
 
     # 执行采集
     job = zhifang_job()
     job.make_job(pages)
-    job.crawl(num)
+    if not onlyjob:
+        job.crawl(num)
