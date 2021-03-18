@@ -96,10 +96,11 @@ if jobtype in ('run', 'runjob') and num == 1:
 if jobtype in ('run', 'runjob') and num > 1:
     def ssh_run(*args):
         slave = random.sample(SLAVES, 1)[0] if not SLAVES_BALANCE else SLAVES_BALANCE
+        cmd = f'python execute_download.py '+ ' '.join(sys.argv[1:])
         if SLAVES_ENV:
-            cmd = f'source {SLAVES_ENV}/bin/activate; cd {SLAVES_WORKSPACE}; {order} -j run -n 1;'
+            cmd = f'source {SLAVES_ENV}/bin/activate; cd {SLAVES_WORKSPACE}; {cmd};'
         else:
-            cmd = f"cd {SLAVES_WORKSPACE}; {order} -j run -n 1;"
+            cmd = f"cd {SLAVES_WORKSPACE}; {cmd};"
         ssh = SSH(slave)
         hostname = ssh.hostname
         logger.info(f"slave:{hostname} 正在下载附件...")
