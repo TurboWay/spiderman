@@ -76,7 +76,7 @@ DATAFILE_ENCODING = 'utf-8-sig'  # 文件编码，默认 'utf-8-sig'
 DATAFILE_HEADER = True  # 是否写入表头列名, 默认 True
 
 # 采集模式
-CRAWL_MODEL = 'standalone'  # standalone 单机 (默认) ; cluster分布式, 需要配置下方的 slaves
+CLUSTER_ENABLE = False  # False 单机 (默认) ; True 分布式, 需要配置下方的 slaves
 
 # 爬虫slaves配置, SLAVES_BALANCE 和 SLAVES 取一个即可；建议配合 nginx 或者 haproxy, 做个 ssh 的负载均衡
 SLAVES = [

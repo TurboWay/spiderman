@@ -57,7 +57,7 @@
 ![standalone](https://gitee.com/TurboWay/blogimg/raw/master/img/standalone.jpg)
 
 ### 附件下载
-![image](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210317144158260.png)
+![image-20210318161618307](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210318161618307.png)
 
 
 ### kafka实时采集监控
@@ -225,9 +225,8 @@ class zhifang_job(SPJob):
 ### 如何下载附件
 
 提供两种方式下载：
-
 * 1、直接在 spider 中启用附件下载管道
-* 2、使用自定义的下载器 easy_download.py 传参下载
+* 2、使用自定义的下载器 execute_download.py 传参下载
 
 > jpg/pdf/word...等各种各样的文件，统称为附件。
 > 下载附件是比较占用带宽的行为，所以在大规模采集中，最好是先把结构化的表数据、附件的元数据入库，
@@ -288,7 +287,7 @@ META_ENGINE = 'sqlite:///meta.db'
 
 ### 如何使用爬虫api
 
-直接运行 api.py，然后可以通过 http://127.0.0.1:2021/docs 查看相关的 api 文档。
+直接运行 api.py，然后可以通过 http://127.0.0.1:2021/docs 查看相关的 api 文档
 
 ### 注意事项
 1. 字段名称不能使用 tablename、isload、ctime、bizdate、spider 等字段，因为这些字段被作为通用字段，避免冲突
