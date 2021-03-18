@@ -111,7 +111,7 @@ class ScheduledRequest:
         self.method = kwargs.get('method', 'GET')   # 请求方式 默认get
         self.callback = kwargs.get('callback')  # 回调函数，指定spider的解析函数
         self.body = kwargs.get('body')  # body, method为post时, 作为 post表单
-        self.meta = kwargs.get('meta')  # meta, 携带反爬信息比如cookies，headers; 以及一些元数据，比如 pagenum
+        self.meta = kwargs.get('meta')  # meta, 携带元数据，比如 pagenum
 ```
 3. item 类定义表名、字段名、排序号(自定义字段顺序)、注释说明(便于管理元数据)、字段类型(仅关系型数据库管道有效) 
 ```python
