@@ -5,6 +5,7 @@
 # @Site : 
 # @Describe: 各种反爬虫中间件
 
+import base64
 import time
 import json
 import random
@@ -68,13 +69,20 @@ class ProxyMiddleWare(object):
     """
 
     def process_request(self, request, spider):
-        proxy = 'your proxy'
-        proxies = {
-            "http": f"http://{proxy}",
-            "https": f"https://{proxy}",
-        }
-        tp = 'https' if request.url.startswith("https://") else 'http'
-        request.meta['proxy'] = proxies.get(tp)
+        # 代理服务器
+        proxyServer = "http://http-dyn.abuyun.com:9020"
+
+        # 代理隧道验证信息
+        proxyUser = ""
+        proxyPass = ""
+
+        if not proxyUser or not proxyPass:
+            spider.crawler.engine.close_spider(spider, "阿布云代理账号未配置!")
+
+        proxyAuth = "Basic " + base64.urlsafe_b64encode(bytes((proxyUser + ":" + proxyPass), "ascii")).decode("utf8")
+
+        request.meta["proxy"] = proxyServer
+        request.headers["Proxy-Authorization"] = proxyAuth
 
 
 class CookiesPoolMiddleWare(object):

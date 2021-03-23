@@ -43,7 +43,7 @@ class zhifang_job(SPJob):
 
 if __name__ == "__main__":
     # 采集页数
-    pages = 5
+    pages = 10
     # 爬虫数量
     num = 1
 

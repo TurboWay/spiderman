@@ -54,7 +54,7 @@
 ![cluster](https://gitee.com/TurboWay/blogimg/raw/master/img/cluster.jpg)
 
 ### standalone模式
-![standalone](https://gitee.com/TurboWay/blogimg/raw/master/img/standalone.jpg)
+![image-20210323141940525](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210323141940525.png)
 
 ### 附件下载
 ![image-20210318161618307](https://gitee.com/TurboWay/blogimg/raw/master/img/image-20210318161618307.png)
@@ -319,5 +319,5 @@ META_ENGINE = 'sqlite:///meta.db'
 | 20210315        | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookie 中间件，cookie 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件 <br> 5.增加 CookiesPool 中间件，用于需要多个账号随机切换采集的场景|
 | 20210317        | 1.增加可以脱离 scrapy 独立工作的、支持分布式的附件下载器 |
 | 20210318        | 1.增加 api 服务 |
-
+| 20210323        | 1.job 日志输出优化 |
 

@@ -36,6 +36,9 @@ class Job:
         def wrapper(self, *args, **kwargs):
             reqs = func(self, *args, **kwargs)
             self.redisctrl.reqs_push(self.redis_key, reqs)
+            size = self.redisctrl.key_len(self.redis_key)
+            logger.name = "spiderman.job"
+            logger.info(f"{func.__name__} 生成成功，{self.redis_key} => {size} ")
             if self.headers:
                 self.redisctrl.add_string(self.redis_headers, json.dumps(self.headers, ensure_ascii=False))
             if self.cookies:
@@ -87,19 +90,23 @@ class SPJob(Job):
         if status != 0:
             logger.error(f"slave:{hostname} 爬虫执行失败：{msg_out + msg_error}")
         else:
-            logger.info(f"slave:{hostname} 爬虫执行成功")
+            logger.info(f"slave:{hostname} 爬虫执行结束")
 
     # standalone模式下：启动爬虫
     def run(self, *args):
         cmd = f"scrapy crawl {self.spider_name}"
         logger.info(f"爬虫正在采集...")
-        p = subprocess.Popen(cmd, shell=True)
+        p = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
         p.communicate()
-        stdout, stderr = p.communicate()  # 忽视输出
-        if p.returncode != 0:
-            logger.error(f"爬虫执行失败：{stdout.decode('utf-8')} {stderr.decode('utf-8')}")
+        stdout, stderr = p.communicate()
+        try:
+            msg = stdout.decode('gbk') + stderr.decode('gbk')
+        except:
+            msg = stdout.decode() + stderr.decode()
+        if p.returncode:
+            logger.error(f"爬虫执行失败：{msg}")
         else:
-            logger.info(f"爬虫执行成功")
+            logger.info(f"爬虫执行结束")
 
     # 执行爬虫
     def crawl(self, num=1):
@@ -124,3 +131,9 @@ class SPJob(Job):
             pool = ThreadPoolExecutor(max_workers=num)
             for _ in pool.map(self.run, range(num)):
                 ...  # 等待所有线程完成
+
+        size = self.redisctrl.key_len(self.redis_key)
+        if size > 0:
+            logger.error(f"爬虫执行失败：剩余待采集请求数 {self.redis_key} => {size}")
+        else:
+            logger.info("爬虫执行成功")

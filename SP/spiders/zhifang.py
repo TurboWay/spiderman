@@ -87,7 +87,6 @@ class zhifang_Spider(SPRedisSpider):
                     'fkey': list_item['pkey'],
                     'pagenum': list_item['pagenum'],
                     # 反爬相关的meta字典也填写这边，然后在spider中启用相应的中间件
-                    # 'cookies': {},      # 一般反爬
                     # 'splash': {'wait': 2}  # js加载、异步加载渲染
                 }
             )
