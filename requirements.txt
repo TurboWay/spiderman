@@ -67,7 +67,7 @@ thriftpy2==0.4.11
 tqdm==4.59.0
 Twisted==20.3.0
 typing-extensions==3.7.4.3
-urllib3==1.25.9
+urllib3==1.26.5
 uvicorn==0.13.4
 w3lib==1.21.0
 zipp==3.4.1
