@@ -2,7 +2,7 @@ attrs==19.3.0
 Automat==20.2.0
 bcrypt==3.1.7
 beautifulsoup4==4.9.0
-bitarray==1.2.2
+bitarray==1.6.1
 bs4==0.0.1
 certifi==2020.4.5.1
 cffi==1.14.0
@@ -60,14 +60,14 @@ service-identity==18.1.0
 six==1.14.0
 soupsieve==2.0
 SQLAlchemy==1.4.0
-starlette==0.13.6
+starlette==0.14.2
 thrift==0.13.0
 thriftpy==0.3.9
 thriftpy2==0.4.11
 tqdm==4.59.0
 Twisted==20.3.0
 typing-extensions==3.7.4.3
-urllib3==1.26.5
+urllib3==1.25.5
 uvicorn==0.13.4
 w3lib==1.21.0
 zipp==3.4.1
