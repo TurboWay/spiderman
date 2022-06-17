@@ -30,7 +30,7 @@ lxml==4.6.3
 mysqlclient==1.4.6
 numpy==1.18.4
 pandas==1.0.3
-paramiko==2.7.2
+paramiko==2.10.1
 parsel==1.6.0
 ply==3.11
 Protego==0.1.16
