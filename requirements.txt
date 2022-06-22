@@ -28,7 +28,7 @@ incremental==17.5.0
 kafka-python==2.0.2
 lxml==4.6.5
 mysqlclient==1.4.6
-numpy==1.21.0
+numpy==1.22.0
 pandas==1.0.3
 paramiko==2.10.1
 parsel==1.6.0
