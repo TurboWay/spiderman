@@ -26,7 +26,7 @@ importlib-metadata==3.7.3
 impyla==0.16.2
 incremental==17.5.0
 kafka-python==2.0.2
-lxml==4.6.5
+lxml==4.9.1
 mysqlclient==1.4.6
 numpy==1.21.0
 pandas==1.0.3
