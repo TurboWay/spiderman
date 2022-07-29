@@ -53,7 +53,7 @@ pytz==2020.1
 queuelib==1.5.0
 redis==3.5.0
 requests==2.23.0
-Scrapy==2.6.0
+Scrapy==2.6.2
 scrapy-redis==0.6.8
 scrapy-splash==0.8.0
 service-identity==18.1.0
