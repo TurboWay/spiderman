@@ -26,4 +26,4 @@ for msg in consumer:
         price = msg.value.get('price')
         price = re.findall('单价(\d+)元', price)
         if price and int(price[0]) < 8000:
-            print(msg.value.get('price'), msg.value.get('txt'), msg.value.get('detail_full_url'))
+            print(msg.value.get('price'), msg.value.get('title'), msg.value.get('detail_full_url'))

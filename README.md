@@ -78,14 +78,15 @@
     - [x] sqlserver
     - [x] oracle
     - [x] postgresql
-    - [x] sqlite3
-    
+    - [x] sqlite3    
+  
     非关系型
     - [x] hbase    
     - [x] mongodb
     - [x] elasticsearch
     - [x] hdfs
     - [x] hive 
+    - [x] doris
     - [x] datafile, 比如 csv
     
 - 反爬处理简易，已封装各种反爬中间件
@@ -307,17 +308,18 @@ META_ENGINE = 'sqlite:///meta.db'
 
 ### 更新日志
 
-| 日期 | 更新内容 |
-| ------------ | ------------ |
-| 20200803        | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status) |
-| 20200831        | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录|
-| 20201104        | 1.requests 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY |
-| 20201212        | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明|
-| 20210105        | 1.增加布隆过滤器|
-| 20210217        | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名|
-| 20210314        | 1.所有反爬中间件合并到 SPMiddleWare|
-| 20210315        | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookie 中间件，cookie 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件 <br> 5.增加 CookiesPool 中间件，用于需要多个账号随机切换采集的场景|
-| 20210317        | 1.增加可以脱离 scrapy 独立工作的、支持分布式的附件下载器 |
-| 20210318        | 1.增加 api 服务 |
-| 20210323        | 1.job 日志输出优化 |
-| 20210330        | 1.kafka 管道优化，如果主题有多个分区，则数据均匀地写到每个分区 |
+| 日期       | 更新内容                                                                                                                                                                                                                          |
+|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 20200803 | 1.使用更优雅的方式来生成元数据; <br> 2.管道函数传参的写法调整; <br> 3.附件表通用字段更名：下载状态 (isload => status)                                                                                                                                                |
+| 20200831 | 1.解决数据入库失败时，一直重试入库的问题; <br> 2.所有管道优化，入库失败时，自动切换成逐行入库，只丢弃异常记录                                                                                                                                                                  |
+| 20201104 | 1.requests 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY                                                                                                                                                                              |
+| 20201212 | 1.payload 中间件支持 DOWNLOAD_TIMEOUT、DOWNLOAD_DELAY; <br> 2.get_sp_cookies 方法优化，使用轻量级的 splash 替换 selenium; <br> 3.md 的原理部分增加去重策略的说明                                                                                               |
+| 20210105 | 1.增加布隆过滤器                                                                                                                                                                                                                     |
+| 20210217 | 1.elasticsearch 管道调整，兼容 elasticsearch7 以上版本，直接使用表名作为索引名                                                                                                                                                                       |
+| 20210314 | 1.所有反爬中间件合并到 SPMiddleWare                                                                                                                                                                                                     |
+| 20210315 | 1.使用更优雅的方式生成 job 初始请求; <br> 2.headers 中间件优化，减少 redis 的内存占用; <br> 3.删除 cookie 中间件，cookie 只是 headers 里面的一个值，可以直接使用 headers 中间件; <br> 4.删除 Payload 中间件，Payload 请求可以直接使用 requests 中间件 <br> 5.增加 CookiesPool 中间件，用于需要多个账号随机切换采集的场景 |
+| 20210317 | 1.增加可以脱离 scrapy 独立工作的、支持分布式的附件下载器                                                                                                                                                                                             |
+| 20210318 | 1.增加 api 服务                                                                                                                                                                                                                   |
+| 20210323 | 1.job 日志输出优化                                                                                                                                                                                                                  |
+| 20210330 | 1.kafka 管道优化，如果主题有多个分区，则数据均匀地写到每个分区                                                                                                                                                                                           |
+| 20230210 | 1.增加支持 Apache Doris |                                                                                                                                                                                                          |                                                                                                                                                                                                                      |                                                                                                                                                                                                                        |                                                                                                                                                                                                                        |

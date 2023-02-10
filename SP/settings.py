@@ -75,6 +75,14 @@ DATAFILE_DELIMITER = ','  # 文件列分隔符，默认 ','
 DATAFILE_ENCODING = 'utf-8-sig'  # 文件编码，默认 'utf-8-sig'
 DATAFILE_HEADER = True  # 是否写入表头列名, 默认 True
 
+# doris
+DORIS_CFG = {
+    'fe_servers': ['xxx:8030', 'xxx:8030', 'xxx:8030'],
+    'database': 'xxx',
+    'user': 'xxx',
+    'passwd': 'xxx'
+}
+
 # 采集模式
 CLUSTER_ENABLE = False  # False 单机 (默认) ; True 分布式, 需要配置下方的 slaves
 

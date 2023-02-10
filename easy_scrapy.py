@@ -86,6 +86,7 @@ class ${spidername}_Spider(SPRedisSpider):
             # 'SP.pipelines.pipelines_kafka.KafkaPipeline': 203,  # Kafka
             # 'SP.pipelines.pipelines_elasticsearch.ElasticSearchPipeline': 204,  # ElasticSearch
             # 'SP.pipelines.pipelines_hdfs.HdfsPipeline': 205  # hdfs, hive
+            # 'SP.pipelines.pipelines_doris.DorisPipeline': 206  # doris
         },
         'DOWNLOADER_MIDDLEWARES': {
             'SP.middlewares.SPMiddleWare.UserAgentMiddleWare': 100,  # 随机 user-agent
