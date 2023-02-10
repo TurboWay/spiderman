@@ -24,8 +24,8 @@ class zhifang_Spider(SPRedisSpider):
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
-            # 'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
-            'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
+            'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
+            # 'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
             # 'SP.pipelines.pipelines_hbase.HbasePipeline': 201,  # Hbase
             # 'SP.pipelines.pipelines_mongodb.MongodbPipeline': 202,  # Mongodb
             # 'SP.pipelines.pipelines_kafka.KafkaPipeline': 203,  # Kafka
@@ -60,18 +60,17 @@ class zhifang_Spider(SPRedisSpider):
         return callback_dt.get(callback)
 
     def list_parse(self, response):
-        rows = BeautifulSoup(response.text, 'lxml').find_all('div', class_="fangyuan_list-con")
+        rows = BeautifulSoup(response.text, 'lxml').find('div', class_="secondHouseList").find_all('div', class_="item_info")
         reqs = []
         for row in rows:
             detail_url = row.find('a').get('href')
             list_item = zhifang_list_Item()
             # save value for your item here like:
             # list_item['title'] = row.find('a').text
-            list_item['tit'] = row.find('p', class_="tit").text
-            list_item['txt'] = row.find('p', class_="txt").text
-            list_item['tit2'] = row.find_all('p', class_="tit")[-1].text
-            list_item['price'] = row.find('p', class_="price").text
-            list_item['agent'] = row.find('p', class_="name").text
+            list_item['title'] = row.find('div', class_="name").text
+            list_item['desc'] = row.find('div', class_="type").text
+            list_item['location'] = row.find('div', class_="location").text
+            list_item['price'] = row.find('div', class_="price").text
             # default column
             list_item['detail_full_url'] = response.urljoin(detail_url)
             list_item['pkey'] = md5(list_item['detail_full_url'])

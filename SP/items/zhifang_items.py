@@ -14,11 +14,10 @@ class zhifang_list_Item(scrapy.Item):
     # define the fields for your item here like:
     # 关系型数据库，可以自定义字段的类型、长度，默认 VARCHAR(length=255)
     # colname = scrapy.Field({'idx': 1, 'comment': '名称', 'type': VARCHAR(255)})
-    tit = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
-    txt = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
-    tit2 = scrapy.Field({'idx': 3, 'comment': '房屋楼层'})
+    title = scrapy.Field({'idx': 1, 'comment': '房屋标题'})
+    desc = scrapy.Field({'idx': 2, 'comment': '房屋描述'})
+    location = scrapy.Field({'idx': 3, 'comment': '房屋地址楼层'})
     price = scrapy.Field({'idx': 4, 'comment': '房屋价格'})
-    agent = scrapy.Field({'idx': 5, 'comment': '房屋中介'})
     # default column
     detail_full_url = scrapy.Field({'idx': 100, 'comment': '详情链接'})  # 通用字段
     pkey = scrapy.Field({'idx': 101, 'comment': 'md5(detail_full_url)'})  # 通用字段
