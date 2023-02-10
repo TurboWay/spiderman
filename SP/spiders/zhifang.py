@@ -24,8 +24,8 @@ class zhifang_Spider(SPRedisSpider):
         'ITEM_PIPELINES': {
             # 'SP.pipelines.pipelines_file.FilePipeline': 100,    # 附件下载
             # 'SP.pipelines.pipelines_clean.CleanPipeline': 101,   # 字段清洗
-            'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
-            # 'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
+            # 'SP.pipelines.pipelines_datafile.DataFilePipeline': 109,  # 写到数据文件
+            'SP.pipelines.pipelines_rdbm.RdbmPipeline': 200,  # 关系型数据库
             # 'SP.pipelines.pipelines_hbase.HbasePipeline': 201,  # Hbase
             # 'SP.pipelines.pipelines_mongodb.MongodbPipeline': 202,  # Mongodb
             # 'SP.pipelines.pipelines_kafka.KafkaPipeline': 203,  # Kafka
