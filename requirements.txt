@@ -72,4 +72,4 @@ uvicorn==0.13.4
 w3lib==1.21.0
 zipp==3.4.1
 zope.interface==5.1.0
-DorisClient==0.2.3
+DorisClient==0.2.6

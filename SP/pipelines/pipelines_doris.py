@@ -7,11 +7,12 @@
 
 import time
 import logging
-from DorisClient import DorisSession
+from DorisClient import DorisSession, DorisLogger
 from SP.utils.base import rowkey, bizdate
 
 logger = logging.getLogger(__name__)
 
+DorisLogger.setLevel('ERROR')
 
 class DorisPipeline(object):
 
