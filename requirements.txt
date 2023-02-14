@@ -60,7 +60,7 @@ service-identity==18.1.0
 six==1.14.0
 soupsieve==2.0
 SQLAlchemy==1.4.0
-starlette==0.14.2
+starlette==0.25.0
 thrift==0.13.0
 thriftpy==0.3.9
 thriftpy2==0.4.11
