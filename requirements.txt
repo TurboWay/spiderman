@@ -51,7 +51,7 @@ pyOpenSSL==19.1.0
 python-dateutil==2.8.1
 pytz==2020.1
 queuelib==1.5.0
-redis==3.5.0
+redis==4.4.4
 requests==2.23.0
 Scrapy==2.6.2
 scrapy-redis==0.6.8
